@@ -15,7 +15,7 @@
     "@react-navigation/native": "^6.1.17",
     "expo": "~51.0.11",
     "expo-status-bar": "~1.12.1",
-    "react": "^18.3.1",
+    "react": "18.2.0",
     "react-native": "0.74.2",
     "react-native-calendars": "^1.1305.0",
     "react-native-gesture-handler": "~2.16.1",
@@ -39,7 +39,7 @@
     "@storybook/test": "^8.1.10",
     "@types/react": "~18.2.45",
     "babel-plugin-react-native-web": "^0.19.12",
-    "react-dom": "^18.3.1",
+    "react-dom": "18.2.0",
     "react-native-web": "^0.19.12",
     "storybook": "^8.1.10",
     "typescript": "^5.1.3"
