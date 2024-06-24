@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import CalendarScreen from '../Screens/Calendar/Calendar';
 import MatchingScreen from '../Screens/Matching/Matching';
 import FriendScreen from '../Screens/Friend/Friend';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Tab = createBottomTabNavigator();
 
@@ -20,22 +21,31 @@ const TabNavigator: React.FC = () => {
 			<Tab.Screen
 				name="Calendar"
 				component={CalendarScreen}
-				options={{ title: 'カレンダー' }} />
+				options={{ 
+					title: 'カレンダー',
+					tabBarIcon: ({ focused }) => <Icon name="calendar" color={focused ? "#4B8687" : "#9E9E9E"} size={20}/>
+				 }} />
 			<Tab.Screen
 				name="Matching"
 				component={MatchingScreen}
-				options={{ title: '日程調整' }} />
+				options={{ 
+					title: '日程調整', 
+					tabBarIcon: ({ focused }) => <Icon name="handshake-o" color={focused ? "#4B8687" : "#9E9E9E"} size={20}/>
+				}} />
 			<Tab.Screen
 				name="Friend"
 				component={FriendScreen}
-				options={{ title: 'フレンド一覧' }} />
+				options={{ 
+					title: 'フレンド一覧' ,
+					tabBarIcon: ({ focused }) => <Icon name="address-book-o" color={focused ? "#4B8687" : "#9E9E9E"} size={20}/>
+				}} />
 		</Tab.Navigator>
 	);
 };
 
 const styles = StyleSheet.create({
 	tabLabel: {
-		color: '#4B8687',
+		
 	}
 });
 
