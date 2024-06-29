@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import CalendarScreen from '../Screens/Calendar/Calendar';
-import MatchingScreen from '../Screens/Matching/Matching';
-import FriendScreen from '../Screens/Friend/Friend';
+import CalendarScreen from '../Screens/Calendar/CalendarScreen';
+import MatchingScreen from '../Screens/Matching/MatchingScreen';
+import FriendScreen from '../Screens/Friend/FriendScreen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Tab = createBottomTabNavigator();

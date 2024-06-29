@@ -1,6 +1,6 @@
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import TabNavigator from '../TabNavigator';
-import DetailScreen from '../../Screens/Calendar/Detail';
+import DetailScreen from '../../Screens/Calendar/DetailScreen';
 
 const Stack = createStackNavigator();
 
