@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import Header from '../../Elements/Header';
+import ScheduleCalendar from '../../Components/ScheduleCalendar';
 
 type RootStackParamList = {
 	Calendar: undefined;
@@ -15,12 +16,8 @@ function CalendarScreen() {
 	return (
 		<View style={{ flex: 1 }}>
 			<Header title="カレンダー" />
-			<View style={styles.container}>
-				<Text>カレンダー画面です。</Text>
-				<Button
-					title="詳細へ"
-					onPress={() => navigation.navigate('Detail')}
-				/>
+			<View>
+				<ScheduleCalendar/>
 			</View>
 		</View>
 	)
@@ -29,9 +26,6 @@ function CalendarScreen() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#ddd',
-		alignItems: 'center',
-		justifyContent: 'center',
 	},
 });
 
