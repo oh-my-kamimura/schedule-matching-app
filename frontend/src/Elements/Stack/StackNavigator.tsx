@@ -1,12 +1,16 @@
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import TabNavigator from '../TabNavigator';
 import DetailScreen from '../../Screens/Calendar/DetailScreen';
+import SetupScreen from '../../Screens/Profile/SetupScreen';
 
 const Stack = createStackNavigator();
 
 const StackNavigator: React.FC = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen
+        name="Setup"
+        component={SetupScreen} />
       <Stack.Screen
         name="Tab"
         component={TabNavigator} />
