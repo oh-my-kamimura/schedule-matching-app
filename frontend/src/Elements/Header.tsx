@@ -19,29 +19,32 @@ const Header: React.FC<Props> = props => {
 	const { title, left, right } = props;
 	return (
 		<View style={styles.header}>
-			<View style={{ flex: 0.25 }}>{left}</View>
-			<Text
-				style={ styles.headerText }>
-				{title ?? ''}
-			</Text>
-			<View style={{ flex: 0.25 }}>{right}</View>
+			<View style={styles.headerInner}>
+				<View style={{ flex: 0.25 }}>{left}</View>
+				<Text
+					style={ styles.headerTitle }>
+					{title ?? ''}
+				</Text>
+				<View style={{ flex: 0.25 }}>{right}</View>
+			</View>
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	header: {
-		height: 60,
-		flexDirection: 'row',
-		alignItems: 'center',
+		height: 100,
+		justifyContent: 'flex-end',
 		backgroundColor: '#ffffff',
 		borderBottomColor: '#888888',
 		borderBottomWidth: 0.3,
 	},
-	headerText: {
-		flex: 1,
+	headerInner: {
+		alignItems: 'center'
+	},
+	headerTitle: {
+		marginBottom: 14,
 		textAlign: 'center',
-		alignItems: 'center',
 		fontWeight: '700',
 		fontSize: 18,
 		color: '#4B8687'
