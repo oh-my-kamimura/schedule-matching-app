@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import LogOutButton from '../Components/LogOutButton';
 
 type Props = {
 	/** ヘッダに表示するタイトル */
@@ -20,12 +21,16 @@ const Header: React.FC<Props> = props => {
 	return (
 		<View style={styles.header}>
 			<View style={styles.headerInner}>
-				<View style={{ flex: 0.25 }}>{left}</View>
+				<Text style={ styles.leftText }>
+					{left}
+				</Text>
 				<Text
 					style={ styles.headerTitle }>
 					{title ?? ''}
 				</Text>
-				<View style={{ flex: 0.25 }}>{right}</View>
+				<Text style={ styles.rightText }>
+					<LogOutButton/>
+				</Text>
 			</View>
 		</View>
 	);
@@ -40,14 +45,30 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 0.3,
 	},
 	headerInner: {
-		alignItems: 'center'
+		flexDirection: 'row',
+		alignItems: 'center',
 	},
 	headerTitle: {
+		flex: 0.54,
 		marginBottom: 14,
 		textAlign: 'center',
 		fontWeight: '700',
 		fontSize: 18,
 		color: '#4B8687'
+	},
+	leftText: {
+		flex: 0.23,
+		marginBottom: 8,
+		textAlign: 'center',
+		fontSize: 14,
+		color: 'rgba(0,0,0,0.6)'
+	},
+	rightText: {
+		flex: 0.23,
+		marginBottom: 8,
+		textAlign: 'center',
+		fontSize: 14,
+		color: 'rgba(0,0,0,0.6)'
 	}
 });
 
