@@ -29,7 +29,7 @@ const Header: React.FC<Props> = props => {
 					{title ?? ''}
 				</Text>
 				<Text style={ styles.rightText }>
-					<LogOutButton/>
+					{right ?? <LogOutButton/>}
 				</Text>
 			</View>
 		</View>
@@ -61,14 +61,14 @@ const styles = StyleSheet.create({
 		marginBottom: 8,
 		textAlign: 'center',
 		fontSize: 14,
-		color: 'rgba(0,0,0,0.6)'
+		color: 'rgba(0,0,0,0.5)'
 	},
 	rightText: {
 		flex: 0.23,
 		marginBottom: 8,
 		textAlign: 'center',
 		fontSize: 14,
-		color: 'rgba(0,0,0,0.6)'
+		color: 'rgba(0,0,0,0.5)'
 	}
 });
 

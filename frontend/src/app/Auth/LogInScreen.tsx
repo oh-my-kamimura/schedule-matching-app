@@ -28,7 +28,7 @@ function LogInScreen() {
 
 	return (
 		<View style={styles.container}>
-			<Header title="ログイン" />
+			<Header title="ログイン" right=""/>
 			<PaperProvider>
 				<TextInput
 					label="メールアドレス"

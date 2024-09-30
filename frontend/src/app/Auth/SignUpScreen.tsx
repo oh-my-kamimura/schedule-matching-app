@@ -33,7 +33,7 @@ function SignUpScreen () {
 
   return (
     <View style={styles.container}>
-      <Header title="会員登録" />
+      <Header title="会員登録" right=""/>
       <PaperProvider>
         <TextInput
           label="ユーザID"
