@@ -1,11 +1,7 @@
 import { StyleSheet, Text, View, Button } from 'react-native';
+import { Link } from 'expo-router';
 import Header from '../../Elements/Header';
 import ScheduleCalendar from '../../Components/ScheduleCalendar';
-
-type RootStackParamList = {
-	Calendar: undefined;
-	Detail: undefined;
-};
 
 function CalendarScreen() {
 	return (
@@ -14,10 +10,9 @@ function CalendarScreen() {
 			<View>
 				<ScheduleCalendar/>
 				<Text>カレンダー画面です。</Text>
-				<Button
-					title="詳細へ"
-					// onPress={() => navigation.navigate('Detail')}
-				/>
+				<Link href='/Calendar/DetailScreen'>
+					<Button title="詳細へ" />
+				</Link>
 			</View>
 		</View>
 	)
