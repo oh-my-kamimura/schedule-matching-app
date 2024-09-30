@@ -8,8 +8,10 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import { TextInput, Button } from 'react-native-paper';
 import Header from '../../Elements/Header';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, addDoc } from 'firebase/firestore';
 
 import { auth } from '../../config';
+import { db } from '../../config';
 
 function SignUpScreen () {
   const [userID, setUserID] = useState('');
@@ -22,6 +24,18 @@ function SignUpScreen () {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log(userCredential.user.uid)
+        addDoc(collection(db, 'users'), {
+          userID: userID,
+          email: email,
+          uid: userCredential.user.uid
+        })
+          .then((docRef) => {
+            console.log("success", docRef.id);
+          })
+          .catch((error) => {
+            console.log(error);
+          }
+        )
         router.replace('Calendar/CalendarScreen')
       })
       .catch((error) => {
