@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Link, router } from 'expo-router'
-import { Provider as PaperProvider } from 'react-native-paper';
 import { TextInput, Button } from 'react-native-paper';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
@@ -22,57 +21,55 @@ function LogInScreen() {
 			.catch((error) => {
 				const { code, message } = error
 				console.log(code, message)
-				Alert.alert(message)				
+				Alert.alert(message)
 			})
 	}
 
 	return (
 		<View style={styles.container}>
-			<Header title="ログイン" right=""/>
-			<PaperProvider>
-				<TextInput
-					label="メールアドレス"
-					mode="outlined"
-					style={styles.textInput}
-					activeOutlineColor='#4B8687'
-					value={email}
-					onChangeText={setEmail}
-					placeholder="メールアドレスを入力してください"
-					placeholderTextColor='#AAAAAA'
-					keyboardType='email-address'
-					textContentType='emailAddress'
-					autoCapitalize='none'
-				/>
-				<TextInput
-					label="パスワード"
-					mode="outlined"
-					style={styles.textInput}
-					activeOutlineColor='#4B8687'
-					value={password}
-					onChangeText={setPassword}
-					secureTextEntry
-					placeholder="パスワードを入力してください"
-					placeholderTextColor='#AAAAAA'
-					textContentType='password'
-					autoCapitalize='none'
-				/>
-				<Button
-					mode="contained"
-					onPress={() => { handlePress(email, password) }}
-					style={styles.button}
-				>
-					ログイン
-				</Button>
+			<Header title="ログイン" right="" />
+			<TextInput
+				label="メールアドレス"
+				mode="outlined"
+				style={styles.textInput}
+				activeOutlineColor='#4B8687'
+				value={email}
+				onChangeText={setEmail}
+				placeholder="メールアドレスを入力してください"
+				placeholderTextColor='#AAAAAA'
+				keyboardType='email-address'
+				textContentType='emailAddress'
+				autoCapitalize='none'
+			/>
+			<TextInput
+				label="パスワード"
+				mode="outlined"
+				style={styles.textInput}
+				activeOutlineColor='#4B8687'
+				value={password}
+				onChangeText={setPassword}
+				secureTextEntry
+				placeholder="パスワードを入力してください"
+				placeholderTextColor='#AAAAAA'
+				textContentType='password'
+				autoCapitalize='none'
+			/>
+			<Button
+				mode="contained"
+				onPress={() => { handlePress(email, password) }}
+				style={styles.button}
+			>
+				ログイン
+			</Button>
 
-				<View style={styles.footer}>
-					<Text style={styles.footerText}>会員登録がまだの方は</Text>
-					<Link href='/Auth/SignUpScreen' asChild replace>
-						<TouchableOpacity>
-							<Text style={styles.footerLink}>こちら</Text>
-						</TouchableOpacity>
-					</Link>
-				</View>
-			</PaperProvider>
+			<View style={styles.footer}>
+				<Text style={styles.footerText}>会員登録がまだの方は</Text>
+				<Link href='/Auth/SignUpScreen' asChild replace>
+					<TouchableOpacity>
+						<Text style={styles.footerLink}>こちら</Text>
+					</TouchableOpacity>
+				</Link>
+			</View>
 		</View>
 	);
 };
