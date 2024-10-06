@@ -5,7 +5,7 @@ import { Provider as PaperProvider } from 'react-native-paper';
 function Layout() {
 	return (
 		<PaperProvider>
-			<Slot />
+			{/* <Slot /> */}
 			<Tabs
 				screenOptions={{
 					headerShown: false,
