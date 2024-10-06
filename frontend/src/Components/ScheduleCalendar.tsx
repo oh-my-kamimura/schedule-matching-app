@@ -1,5 +1,5 @@
-import React from 'react';
-import { SafeAreaView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native'; // Import the 'Text' component from 'react-native'
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
 LocaleConfig.locales.jp = {
@@ -10,15 +10,30 @@ LocaleConfig.locales.jp = {
   };
 LocaleConfig.defaultLocale = 'jp';
 
+const handleDayPress = (day: { dateString: string } | undefined) => {
+  //monthも取得したい場合は、day.dateStringをnew Date()でDateオブジェクトに変換してから取得する
+  console.log(day);
+};
+
+
 export default function ScheduleCalendar() {
   return (
-    <SafeAreaView>
+    <View>
       <Calendar 
         style = {{ 
           height: '100%',
-        }} 
-        onDayPress={(date) => {console.log(date.day + "がおされた")}}
+        }}
+        dayComponent={({ date, state }: { date: any; state: any }) => {
+            const currentDate = new Date();
+            return (
+              <TouchableOpacity onPress={() => handleDayPress(date)}>
+              <View style={{ height: 80, width: 50, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ color:'black' }}>{date && date.day}</Text>
+              </View>
+              </TouchableOpacity>
+            );
+        }}
       />
-    </SafeAreaView>
+    </View>
   )
 }

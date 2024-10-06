@@ -1,6 +1,7 @@
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import TabNavigator from '../TabNavigator';
 import DetailScreen from '../../Screens/Calendar/DetailScreen';
+import AddScheduleScreen from '../../Screens/Calendar/AddScheduleScreen';
 
 const Stack = createStackNavigator();
 
@@ -13,6 +14,9 @@ const StackNavigator: React.FC = () => {
       <Stack.Screen
         name="Detail"
         component={DetailScreen} />
+      <Stack.Screen
+        name="AddSchedule"
+        component={AddScheduleScreen} />
     </Stack.Navigator>
   );
 };
