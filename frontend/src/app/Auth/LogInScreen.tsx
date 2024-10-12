@@ -27,7 +27,12 @@ function LogInScreen() {
 
 	return (
 		<View style={styles.container}>
-			<Header title="ログイン" right="" />
+			<Text style={styles.title}>
+				ログイン
+			</Text>
+			<Text style={styles.description}>
+				メールアドレスとパワードを入力してください
+			</Text>
 			<TextInput
 				label="メールアドレス"
 				mode="outlined"
@@ -61,52 +66,45 @@ function LogInScreen() {
 			>
 				ログイン
 			</Button>
-
-			<View style={styles.footer}>
-				<Text style={styles.footerText}>会員登録がまだの方は</Text>
-				<Link href='/Auth/SignUpScreen' asChild replace>
-					<TouchableOpacity>
-						<Text style={styles.footerLink}>こちら</Text>
-					</TouchableOpacity>
-				</Link>
-			</View>
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		backgroundColor: '#EEEEEE',
+		alignItems: 'center'
+	},
+	title: {
+		marginTop: 226,
+		width: 290,
+		textAlign: 'left',
+		fontSize: 23,
+		fontWeight: 'bold',
+		color: '#4B8687'
+	},
+	description: {
+		marginTop: 10,
+		marginBottom: 15,
+		width: 290,
+		textAlign: 'left',
+		fontSize: 14,
+		color: '#4B8687'
 	},
 	textInput: {
-		justifyContent: 'center',
-		marginTop: 10,
-		marginHorizontal: 20,
+		marginTop: 15,
+		width: 305,
 	},
 	button: {
 		justifyContent: 'center',
 		alignSelf: 'center',
-		backgroundColor: '#4B8687',
-		marginTop: 30,
+		backgroundColor: '#EB8434',
+		marginTop: 40,
 		width: 200,
+		height: 45,
+		borderRadius: 22.5
 	},
-	footer: {
-		flexDirection: 'row',
-		marginTop: 20,
-		justifyContent: 'center',
-		alignItems: 'center'
-	},
-	footerText: {
-		fontSize: 14,
-		lineHeight: 24,
-		marginRight: 4,
-		color: '#222222'
-	},
-	footerLink: {
-		fontSize: 14,
-		lineHeight: 24,
-		color: '#467FD3'
-	}
 });
 
 export default LogInScreen
