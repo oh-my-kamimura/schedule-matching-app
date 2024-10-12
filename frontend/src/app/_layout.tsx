@@ -1,8 +1,13 @@
 import { Slot, Tabs } from 'expo-router'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Provider as PaperProvider } from 'react-native-paper';
+import { useFonts } from 'expo-font';
 
 function Layout() {
+	const [loaded, error] = useFonts({
+		SFCompactRoundedMedium: require('../../assets/fonts/Potta One Regular.ttf')
+	});
+
 	return (
 		<PaperProvider>
 			{/* <Slot /> */}
@@ -32,7 +37,10 @@ function Layout() {
 					}} />
 				<Tabs.Screen
 					name="index"
-					options={{ href: null }} />
+					options={{ 
+						href: null,
+						tabBarStyle: { display: 'none' }  
+					}} />
 				<Tabs.Screen
 					name="Auth/SignUpScreen"
 					options={{ 
