@@ -36,7 +36,7 @@ function Index() {
 					はじめる
 				</Button>
 			</Link>
-			<Link href='/Auth/SignUpScreen' asChild replace>
+			<Link href='/Auth/LogInScreen' asChild replace>
 				<Text style={styles.loginLink}>
 					すでに登録済みの方はこちら
 				</Text>
