@@ -1,6 +1,6 @@
 import {
 	View, Text,
-	Image, StyleSheet
+	Image, StyleSheet, TouchableOpacity
 } from 'react-native';
 import { router, Link } from 'expo-router';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -28,23 +28,19 @@ function Index() {
 				アプリが自動で最適な日程を提案します。{"\n"}
 				無駄なやり取りはもう必要ありません！
 			</Text>
-			<Button
-				mode="contained"
-				style={styles.signupButton}
-				onPress={() => {
-					router.push('/Auth/SignUpScreen');
-				}}
-			>
-				はじめる
-			</Button>
-			<Text
-				style={styles.loginLink}
-				onPress={() => {
-					router.push('/Auth/LogInScreen');
-				}}
-			>
-				すでに登録済みの方はこちら
-			</Text>
+			<TouchableOpacity onPress={() => { router.push('/Auth/SignUpScreen'); }}>
+				<Button
+					mode="contained"
+					style={styles.signupButton}
+				>
+					はじめる
+				</Button>
+			</TouchableOpacity>
+			<TouchableOpacity onPress={() => { router.push('/Auth/LogInScreen'); }}>
+				<Text style={styles.loginLink}>
+					すでに登録済みの方はこちら
+				</Text>
+			</TouchableOpacity>
 		</View>
 	)
 }

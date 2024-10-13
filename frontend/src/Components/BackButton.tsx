@@ -4,28 +4,24 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 function BackButton() {
 	return (
-		<TouchableOpacity>
+		// TODO: back()ではうまくいかない原因を特定する。
+		// TODO: 遷移する際のアニメーションを追加する。
+		<TouchableOpacity onPress={() => { router.replace(''); }} style={styles.button}>
 			<Icon
 				name="arrow-back"
-				style={styles.back}
 				color={"#4B8687"}
 				size={25}
-				onPress={() => {
-					// TODO: back()ではうまくいかない原因を特定する。
-					// TODO: 遷移する際のアニメーションを追加する。
-					router.replace('');
-				}}
 			/>
 		</TouchableOpacity>
 	)
 }
 
 const styles = StyleSheet.create({
-	back: {
-		// 適用する画面間で位置の差異が出ないように調整する。
+	button: {
 		position: 'absolute',
-		marginTop: 62,
-		marginLeft: -152
+		top: 52,
+		left: 25,
+		padding: 10
 	}
 })
 

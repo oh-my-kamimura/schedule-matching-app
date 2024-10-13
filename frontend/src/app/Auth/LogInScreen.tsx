@@ -60,10 +60,9 @@ function LogInScreen() {
 				textContentType='password'
 				autoCapitalize='none'
 			/>
-			<TouchableOpacity>
+			<TouchableOpacity onPress={() => { handlePress(email, password) }}>
 				<Button
 					mode="contained"
-					onPress={() => { handlePress(email, password) }}
 					style={styles.button}
 				>
 					ログイン
