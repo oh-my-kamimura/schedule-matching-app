@@ -55,15 +55,14 @@ function SignUpScreen() {
         必要な情報を入力してください
       </Text>
       <TextInput
-        label="ユーザID"
+        label="表示名"
         mode="outlined"
         style={styles.textInput}
         activeOutlineColor='#4B8687'
         value={userID}
         onChangeText={setUserID}
-        placeholder="ユーザIDを入力してください"
+        placeholder="表示名を入力してください"
         placeholderTextColor='#AAAAAA'
-        keyboardType='ascii-capable'
         autoCapitalize='none'
       />
       <TextInput
@@ -92,7 +91,9 @@ function SignUpScreen() {
         textContentType='password'
         autoCapitalize='none'
       />
-      <View style={{ height: 30 }} />
+      <Text style={styles.uploadText}>
+        プロフィール画像
+      </Text>
       <UploadProfileImage/>
       <TouchableOpacity onPress={() => { handleRegister(userID, email, password) }}>
         <Button
@@ -131,6 +132,11 @@ const styles = StyleSheet.create({
   textInput: {
     marginTop: 15,
     width: 305,
+  },
+  uploadText: {
+    marginTop: 30,
+    marginBottom: 5,
+    color: '#555555'
   },
   button: {
     justifyContent: 'center',
