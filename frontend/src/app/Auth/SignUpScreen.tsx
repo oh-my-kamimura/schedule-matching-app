@@ -3,15 +3,15 @@ import {
   StyleSheet, TouchableOpacity
 } from 'react-native';
 import React, { useState } from 'react';
-import { Link, router } from 'expo-router'
+import { router } from 'expo-router'
 import { TextInput, Button } from 'react-native-paper';
-import Header from '../../Elements/Header';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { auth } from '../../config';
 import { db } from '../../config';
+import BackButton from '../../Components/BackButton';
 
 function SignUpScreen() {
   const [userID, setUserID] = useState('');
@@ -47,6 +47,7 @@ function SignUpScreen() {
 
   return (
     <View style={styles.container}>
+      <BackButton></BackButton>
       <Text style={styles.title}>
         アカウント作成
       </Text>
@@ -92,13 +93,15 @@ function SignUpScreen() {
         autoCapitalize='none'
       />
       <Icon name="person-circle" style={styles.person} color={"#666666"} size={100}/>
-      <Button
-        mode="contained"
-        onPress={() => { handleRegister(userID, email, password) }}
-        style={styles.button}
-      >
-        登録する
-      </Button>
+      <TouchableOpacity>
+        <Button
+          mode="contained"
+          onPress={() => { handleRegister(userID, email, password) }}
+          style={styles.button}
+        >
+          登録する
+        </Button>
+      </TouchableOpacity>
     </View>
   );
 };

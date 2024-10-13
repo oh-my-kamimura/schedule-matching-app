@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { Link, router } from 'expo-router'
+import { router } from 'expo-router'
 import { TextInput, Button } from 'react-native-paper';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
-import Header from '../../Elements/Header';
+import BackButton from '../../Components/BackButton';
 import { auth } from '../../config';
 
 function LogInScreen() {
@@ -27,6 +27,7 @@ function LogInScreen() {
 
 	return (
 		<View style={styles.container}>
+			<BackButton></BackButton>
 			<Text style={styles.title}>
 				ログイン
 			</Text>
@@ -59,13 +60,15 @@ function LogInScreen() {
 				textContentType='password'
 				autoCapitalize='none'
 			/>
-			<Button
-				mode="contained"
-				onPress={() => { handlePress(email, password) }}
-				style={styles.button}
-			>
-				ログイン
-			</Button>
+			<TouchableOpacity>
+				<Button
+					mode="contained"
+					onPress={() => { handlePress(email, password) }}
+					style={styles.button}
+				>
+					ログイン
+				</Button>
+			</TouchableOpacity>
 		</View>
 	);
 };

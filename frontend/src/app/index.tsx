@@ -28,19 +28,23 @@ function Index() {
 				アプリが自動で最適な日程を提案します。{"\n"}
 				無駄なやり取りはもう必要ありません！
 			</Text>
-			<Link href='/Auth/SignUpScreen' asChild replace>
-				<Button
-					mode="contained"
-					style={styles.signupButton}
-				>
-					はじめる
-				</Button>
-			</Link>
-			<Link href='/Auth/LogInScreen' asChild replace>
-				<Text style={styles.loginLink}>
-					すでに登録済みの方はこちら
-				</Text>
-			</Link>
+			<Button
+				mode="contained"
+				style={styles.signupButton}
+				onPress={() => {
+					router.push('/Auth/SignUpScreen');
+				}}
+			>
+				はじめる
+			</Button>
+			<Text
+				style={styles.loginLink}
+				onPress={() => {
+					router.push('/Auth/LogInScreen');
+				}}
+			>
+				すでに登録済みの方はこちら
+			</Text>
 		</View>
 	)
 }
@@ -70,9 +74,13 @@ const styles = StyleSheet.create({
 		color: '#555555'
 	},
 	signupButton: {
+		justifyContent: 'center',
+		alignSelf: 'center',
 		backgroundColor: '#4B8687',
 		marginTop: 50,
-		width: 240
+		width: 240,
+		height: 45,
+		borderRadius: 22.5
 	},
 	loginLink: {
 		marginTop: 20,
