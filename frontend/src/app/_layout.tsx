@@ -11,6 +11,7 @@ function Layout() {
 	return (
 		<PaperProvider>
 			{/* <Slot /> */}
+			{/* TODO: タブを別ファイルで管理するように変更 */}
 			<Tabs
 				screenOptions={{
 					headerShown: false,

@@ -7,11 +7,11 @@ import { router } from 'expo-router'
 import { TextInput, Button } from 'react-native-paper';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 import { auth } from '../../config';
 import { db } from '../../config';
 import BackButton from '../../Components/BackButton';
+import UploadProfileImage from '../../Components/UploadProfileImage';
 
 function SignUpScreen() {
   const [userID, setUserID] = useState('');
@@ -92,11 +92,11 @@ function SignUpScreen() {
         textContentType='password'
         autoCapitalize='none'
       />
-      <Icon name="person-circle" style={styles.person} color={"#666666"} size={100}/>
-      <TouchableOpacity>
+      <View style={{ height: 30 }} />
+      <UploadProfileImage/>
+      <TouchableOpacity onPress={() => { handleRegister(userID, email, password) }}>
         <Button
           mode="contained"
-          onPress={() => { handleRegister(userID, email, password) }}
           style={styles.button}
         >
           登録する
@@ -108,42 +108,39 @@ function SignUpScreen() {
 
 const styles = StyleSheet.create({
   container: {
-		flex: 1,
-		backgroundColor: '#EEEEEE',
-		alignItems: 'center'
-	},
-	title: {
-		marginTop: 130,
-		width: 290,
-		textAlign: 'left',
-		fontSize: 23,
-		fontWeight: 'bold',
-		color: '#4B8687'
-	},
-	description: {
-		marginTop: 10,
-		marginBottom: 15,
-		width: 290,
-		textAlign: 'left',
-		fontSize: 14,
-		color: '#4B8687'
-	},
-	textInput: {
-		marginTop: 15,
-		width: 305,
-	},
-  person: {
-    marginTop: 30,
+    flex: 1,
+    backgroundColor: '#EEEEEE',
+    alignItems: 'center'
   },
-	button: {
-		justifyContent: 'center',
-		alignSelf: 'center',
-		backgroundColor: '#EB8434',
-		marginTop: 30,
-		width: 200,
-		height: 45,
-		borderRadius: 22.5
-	}
+  title: {
+    marginTop: 130,
+    width: 290,
+    textAlign: 'left',
+    fontSize: 23,
+    fontWeight: 'bold',
+    color: '#4B8687'
+  },
+  description: {
+    marginTop: 10,
+    marginBottom: 15,
+    width: 290,
+    textAlign: 'left',
+    fontSize: 14,
+    color: '#4B8687'
+  },
+  textInput: {
+    marginTop: 15,
+    width: 305,
+  },
+  button: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+    backgroundColor: '#EB8434',
+    marginTop: 30,
+    width: 200,
+    height: 45,
+    borderRadius: 22.5
+  }
 });
 
 export default SignUpScreen
