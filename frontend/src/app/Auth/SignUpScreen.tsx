@@ -2,48 +2,32 @@ import {
   View, Text, Alert,
   StyleSheet, TouchableOpacity
 } from 'react-native';
-import React, { useState } from 'react';
+import React from 'react';
 import { router } from 'expo-router'
 import { TextInput, Button } from 'react-native-paper';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { collection, addDoc } from 'firebase/firestore';
 
-import { auth } from '../../config';
-import { db } from '../../config';
 import BackButton from '../../Components/BackButton';
 import UploadProfileImage from '../../Components/UploadProfileImage';
+import { useCreateUser } from '../../Hooks/useCreateUser';
+import { useHandleUserData } from '../../Hooks/useHandleUserData';
+import { FirebaseError } from 'firebase/app';
 
 function SignUpScreen() {
-  const [userID, setUserID] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
-  const handleRegister = (userID: string, email: string, password: string): void => {
-    console.log(userID, email, password);
+  const { userData, handleUserData } = useHandleUserData();
 
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log(userCredential.user.uid)
-        addDoc(collection(db, 'users'), {
-          userID: userID,
-          email: email,
-          uid: userCredential.user.uid
-        })
-          .then((docRef) => {
-            console.log("success", docRef.id);
-          })
-          .catch((error) => {
-            console.log(error);
-          }
-          )
-        router.replace('Calendar/CalendarScreen')
+  const handleRegister = (): void => {
+    useCreateUser()
+      .then((result: any) => {
+        if (result instanceof FirebaseError) {
+          console.error("画面エラー", result);
+          Alert.alert("エラーです。");
+          return;
+        }
+        console.log("アカウント作成に成功しました。");
+        router.replace('Calendar/CalendarScreen');
       })
-      .catch((error) => {
-        const { code, message } = error
-        console.log(code, message)
-        Alert.alert(message)
-      })
-  };
+  }
 
   return (
     <View style={styles.container}>
@@ -59,8 +43,8 @@ function SignUpScreen() {
         mode="outlined"
         style={styles.textInput}
         activeOutlineColor='#4B8687'
-        value={userID}
-        onChangeText={setUserID}
+        value={userData.userName}
+        onChangeText={(text) => handleUserData('userName', text)}
         placeholder="表示名を入力してください"
         placeholderTextColor='#AAAAAA'
         autoCapitalize='none'
@@ -70,8 +54,8 @@ function SignUpScreen() {
         mode="outlined"
         style={styles.textInput}
         activeOutlineColor='#4B8687'
-        value={email}
-        onChangeText={setEmail}
+        value={userData.email}
+        onChangeText={(text) => handleUserData('email', text)}
         placeholder="メールアドレスを入力してください"
         placeholderTextColor='#AAAAAA'
         keyboardType='email-address'
@@ -83,8 +67,8 @@ function SignUpScreen() {
         mode="outlined"
         style={styles.textInput}
         activeOutlineColor='#4B8687'
-        value={password}
-        onChangeText={setPassword}
+        value={userData.password}
+        onChangeText={(text) => handleUserData('password', text)}
         secureTextEntry
         placeholder="パスワードを入力してください"
         placeholderTextColor='#AAAAAA'
@@ -94,8 +78,8 @@ function SignUpScreen() {
       <Text style={styles.uploadText}>
         プロフィール画像
       </Text>
-      <UploadProfileImage/>
-      <TouchableOpacity onPress={() => { handleRegister(userID, email, password) }}>
+      <UploadProfileImage />
+      <TouchableOpacity onPress={() => { handleRegister() }}>
         <Button
           mode="contained"
           style={styles.button}
