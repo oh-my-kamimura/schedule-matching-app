@@ -6,7 +6,7 @@ import { Avatar } from '@rneui/themed';
 
 import { userDataAtom } from '../Recoil/Atom/userDataAtom';
 
-function UploadProfileImage() {
+function ProfileImage(props: { isUploadable?: boolean, size: number }) {
 	const [userData, setUserData] = useRecoilState(userDataAtom);
 
 	const handleUserData = (field: string, value: string) => {
@@ -38,24 +38,46 @@ function UploadProfileImage() {
 	}
 
 	return (
-		<TouchableOpacity onPress={() => pickImageAndUpload()}>
-			{userData.imagePath ? (
-				<Image
-					source={{ uri: userData.imagePath }}
-					style={styles.image}
-					width={90}
-				/>
-			) : (
-				<Avatar
-					size={80}
-					rounded
-					icon={{ name: 'adb', type: 'material' }}
-					containerStyle={{ backgroundColor: '#4B8687' }}
-				>
-					<Avatar.Accessory size={24} />
-				</Avatar>
-			)}
-		</TouchableOpacity>
+		<>
+			{props.isUploadable ? (
+				<TouchableOpacity onPress={() => pickImageAndUpload()}>
+					{userData.imagePath ? (
+						<Image
+							source={{ uri: userData.imagePath }}
+							style={styles.image}
+							width={props.size}
+						/>
+					) : (
+						<Avatar
+							size={props.size * 0.9}
+							rounded
+							icon={{ name: 'adb', type: 'material' }}
+							containerStyle={{ backgroundColor: '#4B8687' }}
+						>
+							<Avatar.Accessory size={props.size * 0.24} />
+						</Avatar>
+					)}
+				</TouchableOpacity>
+			) :
+				(
+					userData.imagePath ? (
+						<Image
+							source={{ uri: userData.imagePath }}
+							style={styles.image}
+							width={props.size}
+						/>
+					) : (
+						<Avatar
+							size={props.size * 0.9}
+							rounded
+							icon={{ name: 'adb', type: 'material' }}
+							containerStyle={{ backgroundColor: '#4B8687' }}
+						>
+						</Avatar>
+					)
+				)
+			}
+		</>
 	)
 }
 
@@ -68,4 +90,4 @@ const styles = StyleSheet.create({
 	}
 })
 
-export default UploadProfileImage;
+export default ProfileImage;

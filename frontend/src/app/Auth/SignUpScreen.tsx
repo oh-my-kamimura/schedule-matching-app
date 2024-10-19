@@ -7,7 +7,7 @@ import { router } from 'expo-router'
 import { TextInput, Button } from 'react-native-paper';
 
 import BackButton from '../../Components/BackButton';
-import UploadProfileImage from '../../Components/UploadProfileImage';
+import ProfileImage from '../../Components/ProfileImage';
 import { useCreateAccount } from '../../Hooks/useCreateAccount';
 import { FirebaseError } from 'firebase/app';
 
@@ -89,7 +89,10 @@ function SignUpScreen() {
       <Text style={styles.uploadText}>
         プロフィール画像
       </Text>
-      <UploadProfileImage />
+      <ProfileImage 
+        isUploadable = {true}
+        size = {90}
+      />
       <TouchableOpacity onPress={() => { handleRegister() }}>
         <Button
           mode="contained"
