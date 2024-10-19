@@ -2,6 +2,7 @@ import { Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import { useRecoilState } from 'recoil';
+import { Avatar } from '@rneui/themed';
 
 import { userDataAtom } from '../Recoil/Atom/userDataAtom';
 
@@ -42,14 +43,17 @@ function UploadProfileImage() {
 				<Image
 					source={{ uri: userData.imagePath }}
 					style={styles.image}
-					width={100}
+					width={90}
 				/>
 			) : (
-				<Icon
-					name="person-circle"
-					color={"#666666"}
-					size={100}
-				/>
+				<Avatar
+					size={80}
+					rounded
+					icon={{ name: 'adb', type: 'material' }}
+					containerStyle={{ backgroundColor: '#4B8687' }}
+				>
+					<Avatar.Accessory size={24} />
+				</Avatar>
 			)}
 		</TouchableOpacity>
 	)
@@ -57,10 +61,10 @@ function UploadProfileImage() {
 
 const styles = StyleSheet.create({
 	image: {
-		width: 90,
-		height: 90,
+		width: 85,
+		height: 85,
 		borderRadius: 50,
-		marginTop: 5
+		marginTop: 3
 	}
 })
 
