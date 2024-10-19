@@ -44,7 +44,11 @@ function ProfileImage(props: { isUploadable?: boolean, size: number }) {
 					{userData.imagePath ? (
 						<Image
 							source={{ uri: userData.imagePath }}
-							style={styles.image}
+							style={{
+								width: props.size,
+								height: props.size,
+								borderRadius: props.size/2
+							}}
 							width={props.size}
 						/>
 					) : (
@@ -63,12 +67,16 @@ function ProfileImage(props: { isUploadable?: boolean, size: number }) {
 					userData.imagePath ? (
 						<Image
 							source={{ uri: userData.imagePath }}
-							style={styles.image}
+							style={{
+								width: props.size,
+								height: props.size,
+								borderRadius: props.size/2
+							}}
 							width={props.size}
 						/>
 					) : (
 						<Avatar
-							size={props.size * 0.9}
+							size={props.size}
 							rounded
 							icon={{ name: 'adb', type: 'material' }}
 							containerStyle={{ backgroundColor: '#4B8687' }}
@@ -80,14 +88,5 @@ function ProfileImage(props: { isUploadable?: boolean, size: number }) {
 		</>
 	)
 }
-
-const styles = StyleSheet.create({
-	image: {
-		width: 85,
-		height: 85,
-		borderRadius: 50,
-		marginTop: 3
-	}
-})
 
 export default ProfileImage;
