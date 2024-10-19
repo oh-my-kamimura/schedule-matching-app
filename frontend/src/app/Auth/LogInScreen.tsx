@@ -1,16 +1,12 @@
-import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { router } from 'expo-router'
 import { TextInput, Button } from 'react-native-paper';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { useRecoilState } from 'recoil';
 
 import BackButton from '../../Components/BackButton';
-import { auth } from '../../config';
-import { userDataAtom } from '../../Recoil/Atom/userDataAtom';
+import { useLogInAccount } from '../../Hooks/useLogInAccount';
 
 function LogInScreen() {
-	const [userData, setUserData] = useRecoilState(userDataAtom);
+	const { userData, setUserData, logInAccount, loading, error } = useLogInAccount();
 
 	const handleUserData = (field: string, value: string) => {
 		console.log("userData", userData);
@@ -21,16 +17,20 @@ function LogInScreen() {
 	};
 
 	const handlePress = (email: string, password: string): void => {
+		console.log("--------------------");
+		console.log("--------------------");
+		console.log("ログイン処理を開始しました。");
 		console.log(email, password);
-		signInWithEmailAndPassword(auth, email, password)
-			.then((userCredential) => {
-				console.log(userCredential.user.uid)
+		logInAccount()
+			.then((result: void | Error) => {
+				if (result instanceof Error) {
+					Alert.alert("ログイン情報が正しくありません。");
+					return;
+				}
+				console.log("--------------------");
+				console.log("ログイン処理が完了しました。");
+				console.log("userData: ", userData);
 				router.replace('Calendar/CalendarScreen')
-			})
-			.catch((error) => {
-				const { code, message } = error
-				console.log(code, message)
-				Alert.alert(message)
 			})
 	}
 

@@ -1,18 +1,15 @@
-import { Alert } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { FirebaseError } from "firebase/app";
-import uuid from 'react-native-uuid';
+import uuid from "react-native-uuid";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
-import { auth } from "../config";
-import { db } from "../config";
-import { storage } from "../config";
+import { auth, db, storage } from "../config";
 
 export const createAccountInDatabase = async (
   userData: any
-): Promise<void | FirebaseError> => {
-  
+): Promise<void | Error> => {
   let userCredential;
   try {
     userCredential = await createUserWithEmailAndPassword(
@@ -46,6 +43,7 @@ export const createAccountInDatabase = async (
       console.error("FirebaseError: ", error);
       return new FirebaseError(code, message);
     }
+    return new Error();
   }
 };
 
@@ -70,6 +68,25 @@ export const uploadImageInStorage = async (uri: string) => {
       console.error("画像のアップロードに失敗しました:", error);
     }
   };
-  
+
   uploadImage(uri);
+};
+
+export const logInAccountInDatabase = async (
+  email: string,
+  password: string
+): Promise<void | Error> => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password)
+    console.log("--------------------");
+    console.log("Firebase: ログイン処理が完了");
+    console.log("uid: ", userCredential.user.uid);
+  } catch (error) {
+    if (error instanceof FirebaseError){
+      const { code, message } = error;
+      console.error("FirebaseError: ", error);
+      return new FirebaseError(code, message);
+    }
+    return new Error();
+  }
 };

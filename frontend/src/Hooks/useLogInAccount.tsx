@@ -3,17 +3,18 @@ import { useState } from "react";
 import { useRecoilState } from 'recoil'
 
 import { userDataAtom } from "../Recoil/Atom/userDataAtom";
-import { createAccountInDatabase } from "../Services/accountService";
+import { logInAccountInDatabase } from "../Services/accountService";
 
-export const useCreateAccount = () => {
+
+export const useLogInAccount = () => {
 
 	const [userData, setUserData] = useRecoilState(userDataAtom);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState('');
 
-	const createAccount = async (): Promise<void | Error> => {
+	const logInAccount = async (): Promise<void | Error> => {
 		setLoading(true);
-		const result = await createAccountInDatabase(userData);
+		const result = await logInAccountInDatabase(userData.email, userData.password);
 		if (result instanceof FirebaseError) {
 			setError('Firebaseの処理でエラーが発生しました');
 			return result;
@@ -22,12 +23,12 @@ export const useCreateAccount = () => {
 			return result;
 		}
 		setLoading(false);
-	};
-
+	}
+	
 	return {
 		userData,
 		setUserData,
-		createAccount,
+		logInAccount,
 		loading,
 		error,
 	};
