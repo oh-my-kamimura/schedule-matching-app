@@ -1,14 +1,20 @@
-import { useState } from 'react';
 import { Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
+import { useRecoilState } from 'recoil';
 
-import { useHandleUserData } from '../Hooks/useHandleUserData';
+import { userDataAtom } from '../Recoil/Atom/userDataAtom';
 
 function UploadProfileImage() {
-	const [selectedImage, setSelectedImage] = useState<string>('');
-	const [selectedImageFilepath, setSelectedImageFilepath] = useState<string>('');
-	const { userData, handleUserData } = useHandleUserData();
+	const [userData, setUserData] = useRecoilState(userDataAtom);
+
+	const handleUserData = (field: string, value: string) => {
+		console.log("userData", userData);
+		setUserData((prevState) => ({
+			...prevState,
+			[field]: value,
+		}));
+	};
 
 	const pickImageAndUpload = async () => {
 		const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -26,16 +32,15 @@ function UploadProfileImage() {
 
 		if (!result.canceled) {
 			console.log("result.assets[0].uri: ", result.assets[0].uri);
-			setSelectedImage(result.assets[0].uri);
 			handleUserData("imagePath", result.assets[0].uri);
 		};
 	}
 
 	return (
 		<TouchableOpacity onPress={() => pickImageAndUpload()}>
-			{selectedImage ? (
+			{userData.imagePath ? (
 				<Image
-					source={{ uri: selectedImage }}
+					source={{ uri: userData.imagePath }}
 					style={styles.image}
 					width={100}
 				/>

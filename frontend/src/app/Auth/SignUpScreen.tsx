@@ -8,22 +8,29 @@ import { TextInput, Button } from 'react-native-paper';
 
 import BackButton from '../../Components/BackButton';
 import UploadProfileImage from '../../Components/UploadProfileImage';
-import { useCreateUser } from '../../Hooks/useCreateUser';
-import { useHandleUserData } from '../../Hooks/useHandleUserData';
+import { useCreateAccount } from '../../Hooks/useCreateAccount';
 import { FirebaseError } from 'firebase/app';
 
 function SignUpScreen() {
 
-  const { userData, handleUserData } = useHandleUserData();
+  const { userData, setUserData, createAccount, loading, error } = useCreateAccount();
+
+  const handleUserData = (field: string, value: string) => {
+    console.log("userData", userData);
+    setUserData((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  };
 
   const handleRegister = (): void => {
-    useCreateUser()
+    createAccount()
       .then((result: any) => {
         if (result instanceof FirebaseError) {
-          console.error("画面エラー", result);
           Alert.alert("エラーです。");
           return;
         }
+        console.log("-------------------------");
         console.log("アカウント作成に成功しました。");
         router.replace('Calendar/CalendarScreen');
       })

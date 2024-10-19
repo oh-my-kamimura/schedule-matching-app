@@ -3,13 +3,22 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { router } from 'expo-router'
 import { TextInput, Button } from 'react-native-paper';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useRecoilState } from 'recoil';
 
 import BackButton from '../../Components/BackButton';
 import { auth } from '../../config';
+import { userDataAtom } from '../../Recoil/Atom/userDataAtom';
 
 function LogInScreen() {
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
+	const [userData, setUserData] = useRecoilState(userDataAtom);
+
+	const handleUserData = (field: string, value: string) => {
+		console.log("userData", userData);
+		setUserData((prevState) => ({
+			...prevState,
+			[field]: value,
+		}));
+	};
 
 	const handlePress = (email: string, password: string): void => {
 		console.log(email, password);
@@ -39,8 +48,8 @@ function LogInScreen() {
 				mode="outlined"
 				style={styles.textInput}
 				activeOutlineColor='#4B8687'
-				value={email}
-				onChangeText={setEmail}
+				value={userData.email}
+				onChangeText={(text) => handleUserData('email', text)}
 				placeholder="メールアドレスを入力してください"
 				placeholderTextColor='#AAAAAA'
 				keyboardType='email-address'
@@ -52,15 +61,15 @@ function LogInScreen() {
 				mode="outlined"
 				style={styles.textInput}
 				activeOutlineColor='#4B8687'
-				value={password}
-				onChangeText={setPassword}
+				value={userData.password}
+				onChangeText={(text) => handleUserData('password', text)}
 				secureTextEntry
 				placeholder="パスワードを入力してください"
 				placeholderTextColor='#AAAAAA'
 				textContentType='password'
 				autoCapitalize='none'
 			/>
-			<TouchableOpacity onPress={() => { handlePress(email, password) }}>
+			<TouchableOpacity onPress={() => { handlePress(userData.email, userData.password) }}>
 				<Button
 					mode="contained"
 					style={styles.button}
