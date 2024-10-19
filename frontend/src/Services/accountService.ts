@@ -76,12 +76,13 @@ export const uploadImageInStorage = async (uri: string) => {
 export const logInAccountInDatabase = async (
   email: string,
   password: string
-): Promise<void | Error> => {
+): Promise<string | Error> => {
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password)
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
     console.log("--------------------");
     console.log("Firebase: ログイン処理が完了");
     console.log("uid: ", userCredential.user.uid);
+    return userCredential.user.uid;
   } catch (error) {
     if (error instanceof FirebaseError){
       const { code, message } = error;
