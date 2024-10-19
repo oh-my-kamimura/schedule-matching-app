@@ -8,11 +8,16 @@ import { useEffect } from 'react';
 import { Button } from 'react-native-paper';
 
 import { auth } from '../config';
+import { useFetchAccountInfo } from '../Hooks/useFetchAccountInfo';
 
 function Index() {
+
+	const { fetchAccountInfo } = useFetchAccountInfo();
+
 	useEffect(() =>
-		onAuthStateChanged(auth, (user) => {
+		onAuthStateChanged(auth, async (user) => {
 			if (user !== null) {
+				await fetchAccountInfo(user.uid);
 				router.replace('/Calendar/CalendarScreen')
 			}
 		})
