@@ -1,10 +1,7 @@
-import { FirebaseError } from "firebase/app";
-import { useState } from "react";
 import { useRecoilState } from 'recoil'
 import { getDoc, doc } from "firebase/firestore";
 
 import { userDataAtom } from "../Recoil/Atom/userDataAtom";
-import { createAccountInDatabase } from "../Services/accountService";
 import { db } from "../config";
 
 
@@ -22,6 +19,7 @@ export const useFetchAccountInfo = () => {
 				userName: data.userName,
 				email: data.email,
 				imagePath: data.imagePath,
+				imageDownloadURL: data.downloadURL
 			});
 			console.log("--------------------");
 			console.log("ユーザーデータを取得できました");

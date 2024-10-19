@@ -7,6 +7,7 @@ export const userDataAtom = atom({
 		email: "",
 		password: "",
 		imagePath: "",
+		imageDownloadURL: ""
 		// previousImagePath: "",
 		// friendList: [],
 	},

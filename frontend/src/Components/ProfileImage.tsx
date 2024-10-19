@@ -66,7 +66,7 @@ function ProfileImage(props: { isUploadable?: boolean, size: number, friendData?
 				(
 					userData.imagePath ? (
 						<Image
-							source={{ uri: props.friendData ? props.friendData.imagePath : userData.imagePath }}
+							source={{ uri: props.friendData ? props.friendData.imageDownloadURL : userData.imagePath }}
 							style={{
 								width: props.size,
 								height: props.size,

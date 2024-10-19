@@ -9,7 +9,7 @@ import { auth, db, storage } from "../config";
 
 export const createAccountInDatabase = async (
   userData: any
-): Promise<void | Error> => {
+): Promise<string | Error> => {
   let userCredential;
   try {
     userCredential = await createUserWithEmailAndPassword(
@@ -21,12 +21,13 @@ export const createAccountInDatabase = async (
     console.log("Authenticationへの登録完了");
     console.log("uid: ", userCredential.user.uid);
 
-    uploadImageInStorage(userData.imagePath);
+    const downloadURL = await uploadImageInStorage(userData.imagePath);
 
     await setDoc(doc(db, "users", userCredential.user.uid), {
       userName: userData.userName,
       email: userData.email,
       imagePath: userData.imagePath,
+      imageDownloadURL: downloadURL
     });
     console.log("-------------------------");
     console.log("firestoreへのデータ格納完了");
@@ -43,9 +44,11 @@ export const createAccountInDatabase = async (
     }
     return new Error();
   }
+  return userCredential.user.uid;
 };
 
-export const uploadImageInStorage = async (uri: string) => {
+export const uploadImageInStorage = async (uri: string): Promise<string>  => {
+  let downloadURL = '';
   // TODO: プロフィール画像変更処理時に使用
   const deleteImage = async () => {
     const storageRef = ref(storage, uri);
@@ -61,7 +64,7 @@ export const uploadImageInStorage = async (uri: string) => {
       const filename = uuid.v4();
       const storageRef = ref(storage, `profile_images/${filename}`);
       await uploadBytes(storageRef, blob);
-      const downloadURL = await getDownloadURL(storageRef);
+      downloadURL = await getDownloadURL(storageRef);
       console.log("--------------------");
       console.log("Uploaded image URL:", downloadURL);
     } catch (error) {
@@ -69,8 +72,8 @@ export const uploadImageInStorage = async (uri: string) => {
       console.log("画像のアップロードに失敗しました:");
     }
   };
-
-  uploadImage(uri);
+  await uploadImage(uri);
+  return downloadURL;
 };
 
 export const logInAccountInDatabase = async (

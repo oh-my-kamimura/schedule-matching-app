@@ -4,12 +4,15 @@ import { useRecoilState } from 'recoil'
 
 import { userDataAtom } from "../Recoil/Atom/userDataAtom";
 import { createAccountInDatabase } from "../Services/accountService";
+import { useFetchAccountInfo } from "./useFetchAccountInfo";
 
 export const useCreateAccount = () => {
 
 	const [userData, setUserData] = useRecoilState(userDataAtom);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState('');
+
+	const { fetchAccountInfo } = useFetchAccountInfo();
 
 	const createAccount = async (): Promise<void | Error> => {
 		setLoading(true);
@@ -21,6 +24,7 @@ export const useCreateAccount = () => {
 			setError('エラーが発生しました');
 			return result;
 		}
+		fetchAccountInfo(result);
 		setLoading(false);
 	};
 
