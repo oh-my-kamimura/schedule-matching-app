@@ -6,7 +6,7 @@ import { Avatar } from '@rneui/themed';
 
 import { userDataAtom } from '../Recoil/Atom/userDataAtom';
 
-function ProfileImage(props: { isUploadable?: boolean, size: number }) {
+function ProfileImage(props: { isUploadable?: boolean, size: number, friendData?: any }) {
 	const [userData, setUserData] = useRecoilState(userDataAtom);
 
 	const handleUserData = (field: string, value: string) => {
@@ -47,7 +47,7 @@ function ProfileImage(props: { isUploadable?: boolean, size: number }) {
 							style={{
 								width: props.size,
 								height: props.size,
-								borderRadius: props.size/2
+								borderRadius: props.size / 2
 							}}
 							width={props.size}
 						/>
@@ -66,11 +66,11 @@ function ProfileImage(props: { isUploadable?: boolean, size: number }) {
 				(
 					userData.imagePath ? (
 						<Image
-							source={{ uri: userData.imagePath }}
+							source={{ uri: props.friendData ? props.friendData.imagePath : userData.imagePath }}
 							style={{
 								width: props.size,
 								height: props.size,
-								borderRadius: props.size/2
+								borderRadius: props.size / 2
 							}}
 							width={props.size}
 						/>

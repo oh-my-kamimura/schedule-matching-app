@@ -8,6 +8,7 @@ function FrinendListItem(props: {userData: any}) {
 		<ListItem bottomDivider>
 			<ProfileImage
 				size={40}
+				friendData={props.userData}
 			/>
 			<ListItem.Content style={styles.listContent}>
 				<ListItem.Title style={styles.listTitle}>

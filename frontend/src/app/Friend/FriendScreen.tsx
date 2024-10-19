@@ -1,18 +1,47 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import Header from '../../Elements/Header';
 import { ListItem } from '@rneui/themed';
 import { useRecoilState } from 'recoil';
-import { SearchBar, Tab, TabView } from '@rneui/themed';
+import { Tab, TabView } from '@rneui/themed';
+import { collection, query, getDocs, where } from 'firebase/firestore';
 
 import ProfileImage from '../../Components/ProfileImage';
 import { userDataAtom } from '../../Recoil/Atom/userDataAtom';
-import FrinendListItem from '../../Components/FriendListItem';
+import FriendListItem from '../../Components/FriendListItem';
+import { SearchBar } from '@rneui/themed';
+import { db } from '../../config';
 
 function FriendScreen() {
 	const [userData, setUserData] = useRecoilState(userDataAtom);
-	const [search, setSearch] = useState("");
 	const [index, setIndex] = useState(0);
+	const [searchText, setSearchText] = useState("");
+	const [results, setResults] = useState<any[]>([]);
+
+	const searchUsers = async (searchText: any) => {
+		if (searchText.trim() === '') {
+			setResults([]);
+			return;
+		}
+
+		try {
+			const ref = collection(db, "users");
+			const q = query(ref, 
+				where('userName', '>=', searchText), 
+				where('userName', '<=', searchText + '\uf8ff')
+			);
+			const snapshot = await getDocs(q);
+			const users = snapshot.docs.map((doc) => doc.data());
+			console.log(users);
+			setResults(users);
+		} catch (error) {
+			console.error('Error searching users: ', error);
+		}
+	};
+
+	useEffect(() => {
+		searchUsers(searchText);
+	}, [searchText]);
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -34,15 +63,16 @@ function FriendScreen() {
 				</ListItem>
 
 				<SearchBar
-					placeholder="表示名, メールアドレスを入力してください。"
-					onChangeText={(text) => setSearch(text)}
-					value={search}
+					placeholder="表示名を入力してください。"
+					onChangeText={(text) => setSearchText(text)}
+					value={searchText}
 					lightTheme
 					containerStyle={styles.searchContainer}
 					inputContainerStyle={styles.searchInputContainer}
 					inputStyle={styles.searchInput}
 					round={true}
 				/>
+				
 				<Tab
 					value={index}
 					onChange={(e) => setIndex(e)}
@@ -69,14 +99,20 @@ function FriendScreen() {
 				</Tab>
 
 				<TabView value={index} onChange={setIndex} animationType="spring">
+					{/* 一覧タブ */}
 					<TabView.Item style={{ width: '100%' }}>
 						<ScrollView>
-							<FrinendListItem userData={userData}></FrinendListItem>
-							<FrinendListItem userData={userData}></FrinendListItem>
+							<FriendListItem userData={userData}></FriendListItem>
+							<FriendListItem userData={userData}></FriendListItem>
 						</ScrollView>
 					</TabView.Item>
+					{/* 検索タブ */}
 					<TabView.Item style={{ width: '100%' }}>
-						<Text>新しくユーザ登録したい場合に使う画面</Text>
+						<ScrollView>
+						{results && results.map((result, index) => (
+							<FriendListItem key={index} userData={result} />
+						))}
+						</ScrollView>
 					</TabView.Item>
 				</TabView>
 
