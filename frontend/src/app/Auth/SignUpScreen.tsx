@@ -24,10 +24,14 @@ function SignUpScreen() {
   };
 
   const handleRegister = (): void => {
+    console.log("-------------------------");
+    console.log("-------------------------");
+    console.log("アカウント作成処理を開始します。");
+    
     createAccount()
       .then((result: any) => {
         if (result instanceof FirebaseError) {
-          Alert.alert("エラーです。");
+          Alert.alert("アカウント作成時にエラーが発生しました。");
           return;
         }
         console.log("-------------------------");

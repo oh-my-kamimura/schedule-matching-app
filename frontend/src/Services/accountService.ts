@@ -32,15 +32,13 @@ export const createAccountInDatabase = async (
     console.log("firestoreへのデータ格納完了");
     console.log("id: ", userCredential.user.uid);
   } catch (error) {
+    console.error(error);
     if (error instanceof FirebaseError) {
       if (userCredential) {
         await auth.currentUser?.delete();
-        console.log(
-          "Firestoreへの格納のみ失敗したため、登録したユーザーを削除しました。"
-        );
+        console.log("Firestoreへの格納のみ失敗しているため、登録されたユーザーを削除しました。");
       }
       const { code, message } = error;
-      console.error("FirebaseError: ", error);
       return new FirebaseError(code, message);
     }
     return new Error();
@@ -52,7 +50,8 @@ export const uploadImageInStorage = async (uri: string) => {
   const deleteImage = async () => {
     const storageRef = ref(storage, uri);
     await deleteObject(storageRef);
-    console.log("古い画像を削除しました。");
+    console.log("--------------------");
+    console.log("すでに画像が登録されていたため古い画像を削除しました。");
   };
 
   const uploadImage = async (uri: string) => {
@@ -63,9 +62,11 @@ export const uploadImageInStorage = async (uri: string) => {
       const storageRef = ref(storage, `profile_images/${filename}`);
       await uploadBytes(storageRef, blob);
       const downloadURL = await getDownloadURL(storageRef);
+      console.log("--------------------");
       console.log("Uploaded image URL:", downloadURL);
     } catch (error) {
-      console.error("画像のアップロードに失敗しました:", error);
+      console.log("--------------------");
+      console.log("画像のアップロードに失敗しました:");
     }
   };
 
