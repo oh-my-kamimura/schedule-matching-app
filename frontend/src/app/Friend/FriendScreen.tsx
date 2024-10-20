@@ -26,8 +26,8 @@ function FriendScreen() {
 
 		try {
 			const ref = collection(db, "users");
-			const q = query(ref, 
-				where('userName', '>=', searchText), 
+			const q = query(ref,
+				where('userName', '>=', searchText),
 				where('userName', '<=', searchText + '\uf8ff'),
 				where('userName', '!=', userData.userName)
 			);
@@ -60,6 +60,7 @@ function FriendScreen() {
 					</ListItem.Content>
 					<ProfileImage
 						size={60}
+						friendData={userData}
 					/>
 				</ListItem>
 
@@ -73,7 +74,7 @@ function FriendScreen() {
 					inputStyle={styles.searchInput}
 					round={true}
 				/>
-				
+
 				<Tab
 					value={index}
 					onChange={(e) => setIndex(e)}
@@ -103,16 +104,20 @@ function FriendScreen() {
 					{/* 一覧タブ */}
 					<TabView.Item style={{ width: '100%' }}>
 						<ScrollView>
-							<FriendListItem userData={userData}></FriendListItem>
-							<FriendListItem userData={userData}></FriendListItem>
+							{/* <FriendListItem userData={userData}></FriendListItem>
+							<FriendListItem userData={userData}></FriendListItem> */}
 						</ScrollView>
 					</TabView.Item>
 					{/* 検索タブ */}
 					<TabView.Item style={{ width: '100%' }}>
 						<ScrollView>
-						{results && results.map((result, index) => (
-							<FriendListItem key={index} userData={result} />
-						))}
+							{results && results.map((result, index) => (
+								<FriendListItem 
+									key={index} 
+									userData={result} 
+									isRegistrable={true}
+								/>
+							))}
 						</ScrollView>
 					</TabView.Item>
 				</TabView>
