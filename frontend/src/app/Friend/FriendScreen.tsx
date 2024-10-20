@@ -28,7 +28,8 @@ function FriendScreen() {
 			const ref = collection(db, "users");
 			const q = query(ref, 
 				where('userName', '>=', searchText), 
-				where('userName', '<=', searchText + '\uf8ff')
+				where('userName', '<=', searchText + '\uf8ff'),
+				where('userName', '!=', userData.userName)
 			);
 			const snapshot = await getDocs(q);
 			const users = snapshot.docs.map((doc) => doc.data());
