@@ -87,7 +87,7 @@ function FrinendListItem(props: { friendData: any, isRegistrable?: boolean }) {
 				/>
 				) : (
 					<Button
-					title="登録済み"
+					title="登録解除"
 					loading={false}
 					loadingProps={{ size: 'small', color: 'white' }}
 					buttonStyle={{

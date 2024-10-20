@@ -1,10 +1,13 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { 
+import {
   setDoc, doc, arrayUnion, arrayRemove, 
   updateDoc, collection, query, getDocs, where
 } from "firebase/firestore";
 import {
-  ref, uploadBytes, getDownloadURL, deleteObject,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
 } from "firebase/storage";
 import { FirebaseError } from "firebase/app";
 import uuid from "react-native-uuid";
@@ -32,7 +35,7 @@ export const createAccountInDatabase = async (
       userName: userData.userName,
       email: userData.email,
       imagePath: userData.imagePath,
-      imageDownloadURL: downloadURL
+      imageDownloadURL: downloadURL,
     });
     console.log("-------------------------");
     console.log("firestoreへのデータ格納完了");
@@ -53,7 +56,7 @@ export const createAccountInDatabase = async (
 };
 
 export const uploadImageInStorage = async (uri: string): Promise<string> => {
-  let downloadURL = '';
+  let downloadURL = "";
   // TODO: プロフィール画像変更処理時に使用
   const deleteImage = async () => {
     const storageRef = ref(storage, uri);
@@ -141,27 +144,46 @@ export const removeFriendInDatabase = async (
     }
     return new Error();
   }
-}
+};
 
 export const searchFriendInDatabase = async (
-  searchText: string
+  searchText: string,
+  filterList?: any[]
 ): Promise<any[] | FirebaseError> => {
-  if (searchText.trim() === '') {
-    return []
-  }
   try {
+    let q;
     const ref = collection(db, "users");
-    const q = query(ref,
-      where('userName', '>=', searchText),
-      where('userName', '<=', searchText + '\uf8ff')
-    );
+    if (filterList) {
+      if (searchText.trim() === "") {
+        q = query(ref, where("__name__", "in", filterList));
+      } else {
+        q = query(
+          ref,
+          where("userName", ">=", searchText),
+          where("userName", "<=", searchText + "\uf8ff"),
+          where("__name__", "!=", auth.currentUser?.uid),
+          where("__name__", "in", filterList)
+        );
+      }
+    } else {
+      if (searchText.trim() === "") {
+        return [];
+      }
+      q = query(
+        ref,
+        where("userName", ">=", searchText),
+        where("userName", "<=", searchText + "\uf8ff"),
+        where("__name__", "!=", auth.currentUser?.uid)
+      );
+    }
     const snapshot = await getDocs(q);
-    const users = snapshot.docs.map((doc) => ({ ...doc.data(), uid: doc.id }));
-    const filteredUsers = users.filter((result) => result.uid !== auth.currentUser?.uid);
-    console.log(filteredUsers);
-    return filteredUsers;
+    const users = snapshot.docs.map((doc) => ({
+...doc.data(),
+      uid: doc.id,
+    }));
+    return users;
   } catch (error) {
-    console.error('Error searching users: ', error);
+    console.error("Error searching users: ", error);
   }
-  return []
-}
+  return [];
+};

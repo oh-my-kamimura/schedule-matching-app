@@ -21,16 +21,25 @@ function FriendScreen() {
 	const [frinendsListInfo, setFriendsListInfo] = useState<any[]>([])
 	const [searchResults, setSearchResults] = useState<any[]>([]);
 
-	const searchUsers = async (searchText: any) => {
-		const results = await searchFriendInDatabase(searchText);
-		if (results instanceof FirebaseError) {
-			return;
+	const searchUsers = async () => {
+		if (index === 0){
+			const results = await searchFriendInDatabase(searchText, userData.friendsList);
+			if (results instanceof FirebaseError) {
+				return;
+			}
+			setFriendsListInfo(results)
 		}
-		setSearchResults(results)
+		else if (index === 1){
+			const results = await searchFriendInDatabase(searchText);
+			if (results instanceof FirebaseError) {
+				return;
+			}
+			setSearchResults(results)
+		}
 	};
 
 	useEffect(() => {
-		searchUsers(searchText);
+		searchUsers();
 	}, [searchText]);
 
 	return (
@@ -93,8 +102,13 @@ function FriendScreen() {
 					{/* 一覧タブ */}
 					<TabView.Item style={{ width: '100%' }}>
 						<ScrollView>
-							{/* <FriendListItem userData={userData}></FriendListItem>
-							<FriendListItem userData={userData}></FriendListItem> */}
+							{frinendsListInfo.map((result, index) => (
+								<FriendListItem
+									key={index}
+									friendData={result}
+									isRegistrable={true}
+								/>
+							))}
 						</ScrollView>
 					</TabView.Item>
 					{/* 検索タブ */}
