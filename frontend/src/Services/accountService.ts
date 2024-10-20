@@ -146,7 +146,7 @@ export const removeFriendInDatabase = async (
   }
 };
 
-export const searchFriendInDatabase = async (
+export const fetchFriendInDatabase = async (
   searchText: string,
   filterList?: any[]
 ): Promise<any[] | FirebaseError> => {

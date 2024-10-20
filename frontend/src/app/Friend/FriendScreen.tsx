@@ -11,31 +11,28 @@ import { userDataAtom } from '../../Recoil/Atom/userDataAtom';
 import FriendListItem from '../../Components/FriendListItem';
 import { SearchBar } from '@rneui/themed';
 import { db } from '../../config';
-import { searchFriendInDatabase } from '../../Services/accountService';
+import { fetchFriendInDatabase } from '../../Services/accountService';
 import { FirebaseError } from 'firebase/app';
 
 function FriendScreen() {
 	const [userData, setUserData] = useRecoilState(userDataAtom);
 	const [index, setIndex] = useState(0);
 	const [searchText, setSearchText] = useState("");
-	const [frinendsListInfo, setFriendsListInfo] = useState<any[]>([])
-	const [searchResults, setSearchResults] = useState<any[]>([]);
+	const [friendsResults, setFriendsResults] = useState<any[]>([])
+	const [notFriendsResults, setNotFriendsResults] = useState<any[]>([]);
 
 	const searchUsers = async () => {
-		if (index === 0){
-			const results = await searchFriendInDatabase(searchText, userData.friendsList);
-			if (results instanceof FirebaseError) {
-				return;
-			}
-			setFriendsListInfo(results)
+		const searchFriendsResults = await fetchFriendInDatabase(searchText, userData.friendsList);
+		if (searchFriendsResults instanceof FirebaseError) {
+			return;
 		}
-		else if (index === 1){
-			const results = await searchFriendInDatabase(searchText);
-			if (results instanceof FirebaseError) {
-				return;
-			}
-			setSearchResults(results)
+		setFriendsResults(searchFriendsResults)
+
+		const searchNotFriendsResults = await fetchFriendInDatabase(searchText);
+		if (searchNotFriendsResults instanceof FirebaseError) {
+			return;
 		}
+		setNotFriendsResults(searchNotFriendsResults)
 	};
 
 	useEffect(() => {
@@ -102,7 +99,7 @@ function FriendScreen() {
 					{/* 一覧タブ */}
 					<TabView.Item style={{ width: '100%' }}>
 						<ScrollView>
-							{frinendsListInfo.map((result, index) => (
+							{friendsResults.map((result, index) => (
 								<FriendListItem
 									key={index}
 									friendData={result}
@@ -114,8 +111,8 @@ function FriendScreen() {
 					{/* 検索タブ */}
 					<TabView.Item style={{ width: '100%' }}>
 						<ScrollView>
-							{searchResults.length > 0 ? (
-								searchResults.map((result, index) => (
+							{notFriendsResults.length > 0 ? (
+								notFriendsResults.map((result, index) => (
 									<FriendListItem
 										key={index}
 										friendData={result}
