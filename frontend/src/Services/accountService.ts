@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { setDoc, doc, arrayUnion, updateDoc } from "firebase/firestore";
+import { setDoc, doc, arrayUnion, arrayRemove, updateDoc } from "firebase/firestore";
 import {
   ref,
   uploadBytes,
@@ -121,3 +121,24 @@ export const addFriendInDatabase = async (
     return new Error();
   }
 };
+
+export const removeFriendInDatabase = async (
+  uid: string
+): Promise<void | Error> => {
+  try {
+    if (auth.currentUser === null) return;
+    console.log(auth.currentUser.uid);
+    await updateDoc(doc(db, "users", auth.currentUser.uid), {
+      friendsList: arrayRemove(uid),
+    });
+    console.log("-------------------------");
+    console.log("firestoreからデータ削除完了");
+  } catch (error) {
+    if (error instanceof FirebaseError) {
+      const { code, message } = error;
+      console.error("FirebaseError: ", error);
+      return new FirebaseError(code, message);
+    }
+    return new Error();
+  }
+}
