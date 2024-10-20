@@ -32,7 +32,7 @@ function FriendScreen() {
 				where('userName', '!=', userData.userName)
 			);
 			const snapshot = await getDocs(q);
-			const users = snapshot.docs.map((doc) => doc.data());
+			const users = snapshot.docs.map((doc) => ({...doc.data(), uid: doc.id}));
 			console.log(users);
 			setResults(users);
 		} catch (error) {
@@ -114,7 +114,7 @@ function FriendScreen() {
 							{results && results.map((result, index) => (
 								<FriendListItem 
 									key={index} 
-									userData={result} 
+									friendData={result} 
 									isRegistrable={true}
 								/>
 							))}

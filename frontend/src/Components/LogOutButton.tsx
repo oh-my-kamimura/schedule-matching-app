@@ -16,10 +16,12 @@ function LogOutButton() {
 	const resetUserData = () => {
 		setUserData((prevState) => ({
 			...prevState,
-			userName: '',
-			email: '',
-			password: '',
-			imagePath: '',
+			userName: "",
+			email: "",
+			password: "",
+			imagePath: "",
+			imageDownloadURL: "",
+			friendsList: [""],
 		}));
 	};
 

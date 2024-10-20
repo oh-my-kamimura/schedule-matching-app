@@ -1,6 +1,11 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { setDoc, doc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import { setDoc, doc, arrayUnion, updateDoc } from "firebase/firestore";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 import { FirebaseError } from "firebase/app";
 import uuid from "react-native-uuid";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -47,7 +52,7 @@ export const createAccountInDatabase = async (
   return userCredential.user.uid;
 };
 
-export const uploadImageInStorage = async (uri: string): Promise<string>  => {
+export const uploadImageInStorage = async (uri: string): Promise<string> => {
   let downloadURL = '';
   // TODO: プロフィール画像変更処理時に使用
   const deleteImage = async () => {
@@ -87,7 +92,28 @@ export const logInAccountInDatabase = async (
     console.log("uid: ", userCredential.user.uid);
     return userCredential.user.uid;
   } catch (error) {
-    if (error instanceof FirebaseError){
+    if (error instanceof FirebaseError) {
+      const { code, message } = error;
+      console.error("FirebaseError: ", error);
+      return new FirebaseError(code, message);
+    }
+    return new Error();
+  }
+};
+
+export const addFriendInDatabase = async (
+  uid: string
+): Promise<void | Error> => {
+  try {
+    if (auth.currentUser === null) return;
+    console.log(auth.currentUser.uid);
+    await updateDoc(doc(db, "users", auth.currentUser.uid), {
+      friendsList: arrayUnion(uid),
+    });
+    console.log("-------------------------");
+    console.log("firestoreへのデータ格納完了");
+  } catch (error) {
+    if (error instanceof FirebaseError) {
       const { code, message } = error;
       console.error("FirebaseError: ", error);
       return new FirebaseError(code, message);

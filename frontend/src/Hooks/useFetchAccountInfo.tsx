@@ -19,7 +19,8 @@ export const useFetchAccountInfo = () => {
 				userName: data.userName,
 				email: data.email,
 				imagePath: data.imagePath,
-				imageDownloadURL: data.downloadURL
+				imageDownloadURL: data.imageDownloadURL,
+				friendsList: data.friendsList
 			});
 			console.log("--------------------");
 			console.log("ユーザーデータを取得できました");

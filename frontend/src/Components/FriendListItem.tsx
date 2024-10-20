@@ -1,22 +1,37 @@
 import { StyleSheet, View } from 'react-native';
 import { Button, ListItem } from '@rneui/themed';
+import { useRecoilState } from 'recoil';
 
 import ProfileImage from './ProfileImage';
+import { userDataAtom } from '../Recoil/Atom/userDataAtom';
+import { addFriendInDatabase } from '../Services/accountService';
 
-function FrinendListItem(props: { userData: any, isRegistrable?: boolean }) {
+function FrinendListItem(props: { friendData: any, isRegistrable?: boolean }) {
+	const [userData, setUserData] = useRecoilState(userDataAtom);
+
+	const addFriend = async () => {
+		console.log('props.friendData.uid', props.friendData.uid);
+		await addFriendInDatabase(props.friendData.uid);
+		await setUserData((prevState) => ({
+			...prevState,
+			friendsList: [...prevState.friendsList, props.friendData.uid]
+		}));
+		console.log(userData);
+	}
+
 	return (
 		<ListItem bottomDivider style={{ paddingLeft: 5 }}>
 			<ProfileImage
 				size={55}
-				friendData={props.userData}
+				friendData={props.friendData}
 			/>
 			<ListItem.Content style={styles.listContent}>
 				<ListItem.Title style={styles.listTitle}>
-					{props.userData.userName}
+					{props.friendData.userName}
 				</ListItem.Title>
 				<ListItem.Subtitle style={styles.listSubTitle}>
 					{/* TODO: 備考欄に変更予定 */}
-					{props.userData.email}
+					{props.friendData.email}
 				</ListItem.Subtitle>
 			</ListItem.Content>
 
@@ -39,7 +54,7 @@ function FrinendListItem(props: { userData: any, isRegistrable?: boolean }) {
 						padding: 5,
 						width: 110,
 					}}
-					onPress={() => console.log('aye')}
+					onPress={() => addFriend()}
 				/>
 			)}
 		</ListItem>
