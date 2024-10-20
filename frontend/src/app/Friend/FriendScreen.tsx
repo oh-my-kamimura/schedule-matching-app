@@ -11,33 +11,22 @@ import { userDataAtom } from '../../Recoil/Atom/userDataAtom';
 import FriendListItem from '../../Components/FriendListItem';
 import { SearchBar } from '@rneui/themed';
 import { db } from '../../config';
+import { searchFriendInDatabase } from '../../Services/accountService';
+import { FirebaseError } from 'firebase/app';
 
 function FriendScreen() {
 	const [userData, setUserData] = useRecoilState(userDataAtom);
 	const [index, setIndex] = useState(0);
 	const [searchText, setSearchText] = useState("");
-	const [results, setResults] = useState<any[]>([]);
+	const [frinendsListInfo, setFriendsListInfo] = useState<any[]>([])
+	const [searchResults, setSearchResults] = useState<any[]>([]);
 
 	const searchUsers = async (searchText: any) => {
-		if (searchText.trim() === '') {
-			setResults([]);
+		const results = await searchFriendInDatabase(searchText);
+		if (results instanceof FirebaseError) {
 			return;
 		}
-
-		try {
-			const ref = collection(db, "users");
-			const q = query(ref,
-				where('userName', '>=', searchText),
-				where('userName', '<=', searchText + '\uf8ff'),
-				where('userName', '!=', userData.userName)
-			);
-			const snapshot = await getDocs(q);
-			const users = snapshot.docs.map((doc) => ({...doc.data(), uid: doc.id}));
-			console.log(users);
-			setResults(users);
-		} catch (error) {
-			console.error('Error searching users: ', error);
-		}
+		setSearchResults(results)
 	};
 
 	useEffect(() => {
@@ -111,13 +100,26 @@ function FriendScreen() {
 					{/* 検索タブ */}
 					<TabView.Item style={{ width: '100%' }}>
 						<ScrollView>
-							{results && results.map((result, index) => (
-								<FriendListItem 
-									key={index} 
-									friendData={result} 
-									isRegistrable={true}
-								/>
-							))}
+							{searchResults.length > 0 ? (
+								searchResults.map((result, index) => (
+									<FriendListItem
+										key={index}
+										friendData={result}
+										isRegistrable={true}
+									/>
+								))
+							) : (
+								searchText === '' ? (
+									<Text style={styles.searchTextNone}>
+										ユーザを検索してフレンド登録することができます。{"\n"}
+										表示名を入力してください。
+									</Text>
+								) : (
+									<Text style={styles.searchResultsNone}>
+										検索結果がありません。
+									</Text>
+								)
+							)}
 						</ScrollView>
 					</TabView.Item>
 				</TabView>
@@ -150,6 +152,21 @@ const styles = StyleSheet.create({
 	searchInput: {
 		fontSize: 14,
 		color: '#333333'
+	},
+	searchTextNone: {
+		marginTop: 50,
+		verticalAlign: 'middle',
+		textAlign: 'center',
+		fontSize: 13,
+		lineHeight: 24,
+	},
+	searchResultsNone: {
+		marginTop: 60,
+		verticalAlign: 'middle',
+		textAlign: 'center',
+		fontSize: 13,
+		lineHeight: 24,
+
 	}
 });
 

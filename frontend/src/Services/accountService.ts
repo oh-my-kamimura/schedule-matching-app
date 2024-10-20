@@ -1,10 +1,10 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { setDoc, doc, arrayUnion, arrayRemove, updateDoc } from "firebase/firestore";
+import { 
+  setDoc, doc, arrayUnion, arrayRemove, 
+  updateDoc, collection, query, getDocs, where
+} from "firebase/firestore";
 import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
+  ref, uploadBytes, getDownloadURL, deleteObject,
 } from "firebase/storage";
 import { FirebaseError } from "firebase/app";
 import uuid from "react-native-uuid";
@@ -141,4 +141,27 @@ export const removeFriendInDatabase = async (
     }
     return new Error();
   }
+}
+
+export const searchFriendInDatabase = async (
+  searchText: string
+): Promise<any[] | FirebaseError> => {
+  if (searchText.trim() === '') {
+    return []
+  }
+  try {
+    const ref = collection(db, "users");
+    const q = query(ref,
+      where('userName', '>=', searchText),
+      where('userName', '<=', searchText + '\uf8ff')
+    );
+    const snapshot = await getDocs(q);
+    const users = snapshot.docs.map((doc) => ({ ...doc.data(), uid: doc.id }));
+    const filteredUsers = users.filter((result) => result.uid !== auth.currentUser?.uid);
+    console.log(filteredUsers);
+    return filteredUsers;
+  } catch (error) {
+    console.error('Error searching users: ', error);
+  }
+  return []
 }
