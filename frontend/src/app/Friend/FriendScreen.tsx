@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, RefreshControl } from 'react-native';
 import Header from '../../Elements/Header';
 import { ListItem } from '@rneui/themed';
 import { useRecoilState } from 'recoil';
@@ -19,6 +19,7 @@ function FriendScreen() {
 	const [searchText, setSearchText] = useState("");
 	const [friendsResults, setFriendsResults] = useState<any[]>([])
 	const [notFriendsResults, setNotFriendsResults] = useState<any[]>([]);
+	const [refreshing, setRefreshing] = useState(false);
 
 	const searchUsers = async () => {
 		const searchFriendsResults = await fetchFriendInDatabase(searchText, userData.friendsList);
@@ -77,7 +78,7 @@ function FriendScreen() {
 					style={styles.tab}
 				>
 					<Tab.Item
-						title="一覧"
+						title={`一覧 (${userData.friendsList.length})`}
 						titleStyle={{
 							fontSize: 12,
 							color: index === 0 ? '#4B8687' : 'grey',
@@ -97,19 +98,27 @@ function FriendScreen() {
 				<TabView value={index} onChange={setIndex} animationType="spring">
 					{/* 一覧タブ */}
 					<TabView.Item style={{ width: '100%' }}>
-						<ScrollView>
-							{friendsResults.map((result, index) => (
-								<FriendListItem
-									key={index}
-									friendData={result}
-									isRegistrable={true}
-								/>
-							))}
+						<ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={searchUsers} />}>
+							{friendsResults.length > 0 ? (
+								friendsResults.map((result, index) => (
+									<FriendListItem
+										key={index}
+										friendData={result}
+										isRegistrable={true}
+									/>
+								))
+							) : (
+								searchText === '' ? (
+									<Text style={styles.searchTextNone}>登録しているフレンドがいません。</Text>
+								) : (
+									<Text style={styles.searchTextNone}>検索条件に合致するフレンドがいません。</Text>
+								)
+							)}
 						</ScrollView>
 					</TabView.Item>
 					{/* 検索タブ */}
 					<TabView.Item style={{ width: '100%' }}>
-						<ScrollView>
+						<ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={searchUsers} />}>
 							{notFriendsResults.length > 0 ? (
 								notFriendsResults.map((result, index) => (
 									<FriendListItem
@@ -133,8 +142,6 @@ function FriendScreen() {
 						</ScrollView>
 					</TabView.Item>
 				</TabView>
-
-
 			</View>
 		</View>
 	)

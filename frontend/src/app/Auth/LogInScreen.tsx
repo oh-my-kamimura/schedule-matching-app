@@ -9,7 +9,6 @@ function LogInScreen() {
 	const { userData, setUserData, logInAccount, loading, error } = useLogInAccount();
 
 	const handleUserData = (field: string, value: string) => {
-		console.log("userData", userData);
 		setUserData((prevState) => ({
 			...prevState,
 			[field]: value,
