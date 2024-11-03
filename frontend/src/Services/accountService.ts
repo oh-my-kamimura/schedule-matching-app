@@ -153,7 +153,10 @@ export const fetchFriendInDatabase = async (
   try {
     let q;
     const ref = collection(db, "users");
-    if (filterList) {
+    if (filterList && filterList.length == 0) {
+      return []
+    }
+    else if (filterList && filterList.length > 0) {
       if (searchText.trim() === "") {
         q = query(ref, where("__name__", "in", filterList));
       } else {
@@ -178,7 +181,7 @@ export const fetchFriendInDatabase = async (
     }
     const snapshot = await getDocs(q);
     const users = snapshot.docs.map((doc) => ({
-...doc.data(),
+      ...doc.data(),
       uid: doc.id,
     }));
     return users;

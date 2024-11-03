@@ -4,7 +4,6 @@ import Header from '../../Elements/Header';
 import { ListItem } from '@rneui/themed';
 import { useRecoilState } from 'recoil';
 import { Tab, TabView } from '@rneui/themed';
-import { collection, query, getDocs, where } from 'firebase/firestore';
 
 import ProfileImage from '../../Components/ProfileImage';
 import { userDataAtom } from '../../Recoil/Atom/userDataAtom';
