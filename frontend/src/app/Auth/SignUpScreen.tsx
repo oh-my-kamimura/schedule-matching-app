@@ -2,61 +2,62 @@ import {
   View, Text, Alert,
   StyleSheet, TouchableOpacity
 } from 'react-native';
-import React, { useState } from 'react';
-import { Link, router } from 'expo-router'
+import React from 'react';
+import { router } from 'expo-router'
 import { TextInput, Button } from 'react-native-paper';
-import Header from '../../Elements/Header';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { collection, addDoc } from 'firebase/firestore';
 
-import { auth } from '../../config';
-import { db } from '../../config';
+import BackButton from '../../Components/BackButton';
+import ProfileImage from '../../Components/ProfileImage';
+import { useCreateAccount } from '../../Hooks/useCreateAccount';
+import { FirebaseError } from 'firebase/app';
 
 function SignUpScreen() {
-  const [userID, setUserID] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
-  const handleRegister = (userID: string, email: string, password: string): void => {
-    console.log(userID, email, password);
+  const { userData, setUserData, createAccount, loading, error } = useCreateAccount();
 
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log(userCredential.user.uid)
-        addDoc(collection(db, 'users'), {
-          userID: userID,
-          email: email,
-          uid: userCredential.user.uid
-        })
-          .then((docRef) => {
-            console.log("success", docRef.id);
-          })
-          .catch((error) => {
-            console.log(error);
-          }
-          )
-        router.replace('Calendar/CalendarScreen')
-      })
-      .catch((error) => {
-        const { code, message } = error
-        console.log(code, message)
-        Alert.alert(message)
-      })
+  const handleUserData = (field: string, value: string) => {
+    console.log("userData", userData);
+    setUserData((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
   };
+
+  const handleRegister = (): void => {
+    console.log("-------------------------");
+    console.log("-------------------------");
+    console.log("アカウント作成処理を開始します。");
+    
+    createAccount()
+      .then((result: any) => {
+        if (result instanceof FirebaseError) {
+          Alert.alert("アカウント作成時にエラーが発生しました。");
+          return;
+        }
+        console.log("-------------------------");
+        console.log("アカウント作成に成功しました。");
+        router.replace('Calendar/CalendarScreen');
+      })
+  }
 
   return (
     <View style={styles.container}>
-      <Header title="会員登録" right="" />
+      <BackButton></BackButton>
+      <Text style={styles.title}>
+        アカウント作成
+      </Text>
+      <Text style={styles.description}>
+        必要な情報を入力してください
+      </Text>
       <TextInput
-        label="ユーザID"
+        label="表示名"
         mode="outlined"
         style={styles.textInput}
         activeOutlineColor='#4B8687'
-        value={userID}
-        onChangeText={setUserID}
-        placeholder="ユーザIDを入力してください"
+        value={userData.userName}
+        onChangeText={(text) => handleUserData('userName', text)}
+        placeholder="表示名を入力してください"
         placeholderTextColor='#AAAAAA'
-        keyboardType='ascii-capable'
         autoCapitalize='none'
       />
       <TextInput
@@ -64,8 +65,8 @@ function SignUpScreen() {
         mode="outlined"
         style={styles.textInput}
         activeOutlineColor='#4B8687'
-        value={email}
-        onChangeText={setEmail}
+        value={userData.email}
+        onChangeText={(text) => handleUserData('email', text)}
         placeholder="メールアドレスを入力してください"
         placeholderTextColor='#AAAAAA'
         keyboardType='email-address'
@@ -77,66 +78,72 @@ function SignUpScreen() {
         mode="outlined"
         style={styles.textInput}
         activeOutlineColor='#4B8687'
-        value={password}
-        onChangeText={setPassword}
+        value={userData.password}
+        onChangeText={(text) => handleUserData('password', text)}
         secureTextEntry
         placeholder="パスワードを入力してください"
         placeholderTextColor='#AAAAAA'
         textContentType='password'
         autoCapitalize='none'
       />
-      <Button
-        mode="contained"
-        onPress={() => { handleRegister(userID, email, password) }}
-        style={styles.button}
-      >
-        登録する
-      </Button>
-
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>すでに会員登録している方は</Text>
-        <Link href='/Auth/LogInScreen' asChild replace>
-          <TouchableOpacity>
-            <Text style={styles.footerLink}>こちら</Text>
-          </TouchableOpacity>
-        </Link>
-      </View>
+      <Text style={styles.uploadText}>
+        プロフィール画像
+      </Text>
+      <ProfileImage 
+        isUploadable = {true}
+        size = {90}
+      />
+      <TouchableOpacity onPress={() => { handleRegister() }}>
+        <Button
+          mode="contained"
+          style={styles.button}
+        >
+          登録する
+        </Button>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: '#EEEEEE',
+    alignItems: 'center'
+  },
+  title: {
+    marginTop: 130,
+    width: 290,
+    textAlign: 'left',
+    fontSize: 23,
+    fontWeight: 'bold',
+    color: '#4B8687'
+  },
+  description: {
+    marginTop: 10,
+    marginBottom: 15,
+    width: 290,
+    textAlign: 'left',
+    fontSize: 14,
+    color: '#4B8687'
   },
   textInput: {
-    justifyContent: 'center',
-    marginTop: 10,
-    marginHorizontal: 20,
+    marginTop: 15,
+    width: 305,
+  },
+  uploadText: {
+    marginTop: 30,
+    marginBottom: 5,
+    color: '#555555'
   },
   button: {
     justifyContent: 'center',
     alignSelf: 'center',
-    backgroundColor: '#4B8687',
+    backgroundColor: '#EB8434',
     marginTop: 30,
     width: 200,
-  },
-  footer: {
-    flexDirection: 'row',
-    marginTop: 20,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  footerText: {
-    fontSize: 14,
-    lineHeight: 24,
-    marginRight: 4,
-    color: '#222222'
-  },
-  footerLink: {
-    fontSize: 14,
-    lineHeight: 24,
-    color: '#467FD3'
+    height: 45,
+    borderRadius: 22.5
   }
 });
 

@@ -1,17 +1,34 @@
-import { 
-	TouchableOpacity, Text, 
-	Alert, StyleSheet 
+import {
+	TouchableOpacity, Text,
+	Alert, StyleSheet
 } from "react-native";
 import { signOut } from "firebase/auth";
 import { router } from "expo-router";
 
 import { auth } from "../config";
+import { userDataAtom } from '../Recoil/Atom/userDataAtom';
+import { useRecoilState } from "recoil";
 
-function LogOutButton () {
+function LogOutButton() {
+
+	const [userData, setUserData] = useRecoilState(userDataAtom);
+
+	const resetUserData = () => {
+		setUserData((prevState) => ({
+			...prevState,
+			userName: "",
+			email: "",
+			password: "",
+			imagePath: "",
+			imageDownloadURL: "",
+			friendsList: [""],
+		}));
+	};
 
 	const handlePress = (): void => {
 		signOut(auth)
-			.then(() =>  {
+			.then(() => {
+				resetUserData();
 				router.replace('/Auth/LogInScreen')
 			})
 			.catch(() => {
