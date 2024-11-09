@@ -20,7 +20,7 @@ export default function ScheduleCalendar() {
   const [selected, setSelected] = useState('');
   const { eventItems } = useCalendarEvents();
   const theme = useColorScheme();
-  const cellMinHeight = 50;
+  const cellMinHeight = 58;
 
   const calendarTheme: CalendarTheme = useMemo(
     () => ({
@@ -33,9 +33,13 @@ export default function ScheduleCalendar() {
   );
 
   const handleDayPress = (day: { dateString: string } | undefined) => {
-    if(day) setSelected(day.dateString);
-    console.log(selected);
-    console.log(day);
+    console.log('on press day', day?.dateString);
+    if (day?.dateString) {
+      setSelected(day.dateString);
+    }
+    else {
+      console.log("日付がセットされませんでした");
+    }
   };
   
   return (
@@ -49,9 +53,17 @@ export default function ScheduleCalendar() {
         hideExtraDays={false}
         monthFormat="yyyy年 M月"
         dayComponent={
-          (d) => {
+          (day) => {
             return(
-              <ScheduleCalendarDayItem {...d} eventItems={eventItems} cellMinHeight={cellMinHeight} />
+              <ScheduleCalendarDayItem 
+                {...day} 
+                eventItems={eventItems} 
+                cellMinHeight={cellMinHeight} 
+                {...(day.date?.dateString === selected ? { state: 'selected' } : {})}
+                onPress={() => {
+                  handleDayPress(day.date);
+                }}
+              />
             )
           }
         }
@@ -60,13 +72,6 @@ export default function ScheduleCalendar() {
         horizontal={true}
         hideArrows={false}
         pagingEnabled={true}
-        onDayPress={day => {
-          console.log("onDayPressが実行されました");
-          handleDayPress(day);
-        }}
-        markedDates={{
-          [selected]: {selected: true, disableTouchEvent: true, selectedColor: 'orange'}
-        }}
       />
     </View>
   )

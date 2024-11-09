@@ -19,26 +19,18 @@ type Props = DayProps & {
 };
 
 export const ScheduleCalendarDayItem = (props: Props) => {
-  const { date, eventItems: dayItems, children, state, cellMinHeight } = props;
+  const { date, eventItems: dayItems, children, state, cellMinHeight, onPress } = props;
 
   const events = useMemo(
     () => (dayItems.get((date as DateData).dateString) ?? []).sort((a, b) => b.index - a.index),
     [date, dayItems],
   );
 
-  const onDayPress = useCallback(() => {
-    console.info('on press day', date?.dateString);
-  }, []);
-
-  const onEventPress = useCallback((item: CalendarItem) => {
-    console.info('on press event', item.text);
-  }, []);
-
   const renderEvent = useCallback((v: CalendarItem, i: number) => {
     const borderLeft = v.type == 'start' || v.type == 'all' ? CELL_RADIUS : 0; // 表示タイプが予定開始日または全日の場合は、左枠線を曲げる
     const borderRight = v.type == 'end' || v.type == 'all' ? CELL_RADIUS : 0; // 表示タイプが予定終了日または全日の場合は、右枠線を曲げる
     return (
-      <TouchableOpacity
+      <View
         key={`${v.id} - ${i}`}
         style={[
           styles.event,
@@ -51,7 +43,6 @@ export const ScheduleCalendarDayItem = (props: Props) => {
             borderBottomRightRadius: borderRight,
           },
         ]}
-        // onPress={() => onEventPress(v)}
       >
         {v.type == 'start' || v.type == 'all' ? (
           <View style={styles.eventRow}>
@@ -62,7 +53,7 @@ export const ScheduleCalendarDayItem = (props: Props) => {
         ) : (
           <></>
         )}
-      </TouchableOpacity>
+      </View>
     );
   }, []);
 
@@ -76,9 +67,15 @@ export const ScheduleCalendarDayItem = (props: Props) => {
           opacity: state == 'disabled' ? 0.4 : 1,
         },
       ]}
-      // onPress={() => onDayPress()}
+      onPress={() => onPress?.(date)}
     >
-      <Text style={[styles.dayText, state == 'today' && styles.todayText]}>{children}</Text>
+      <Text 
+        style={[styles.dayText, 
+          state == 'today' && styles.todayText, 
+          state == 'selected' && styles.selectedText]}
+        >
+          {children}
+        </Text>
       <View>{events.map((event, i) => renderEvent(event, i))}</View>
     </TouchableOpacity>
   );
@@ -95,6 +92,11 @@ const styles = StyleSheet.create({
   todayText: {
     color: 'blue',
     fontWeight: 'bold',
+  },
+  selectedText: {
+    color: 'white',
+    backgroundColor: 'orange',
+    borderRadius: 20,
   },
   event: {
     width: '99%',
