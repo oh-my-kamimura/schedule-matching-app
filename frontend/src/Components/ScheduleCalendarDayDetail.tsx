@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { useRecoilState } from 'recoil';
-import { LocaleConfig } from 'react-native-calendars';
 
 import { selectedDayAtom } from '../Recoil/Atom/selectedDayAtom';
 import CalendarItem from '../Types/CalendarItem';
@@ -12,10 +11,7 @@ function ScheduleCalendarDayDetail(props: {eventItems: Map<string, CalendarItem[
 	return (
 		<View style={styles.container}>
 			<View style={styles.leftContainer}>
-				<Text style={styles.selectedDay}>{selected?.day}</Text>
-				<Text style={styles.selectedDayofweek}>
-					{LocaleConfig.locales.jp.dayNames[new Date(selected?.dateString).getDay()]}
-				</Text>
+				<Text>{selected?.dateString}</Text>
 			</View>
 			<View style={styles.rightContainer}>
 				{selected && props.eventItems.get(selected.dateString)?.map((item, index) => (
@@ -43,17 +39,6 @@ const styles = StyleSheet.create({
 	leftContainer: {
 		flex: 1,
 		height: '100%',
-	},
-	selectedDay: {
-		textAlign: 'center',
-		marginTop: 15,
-		fontSize: 25,
-		fontWeight: 'bold'
-	},
-	selectedDayofweek: {
-		textAlign: 'center',
-		marginTop: 10,
-		fontSize: 10
 	},
 	rightContainer: {
 		flex: 3,
