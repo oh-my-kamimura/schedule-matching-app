@@ -1,8 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import CalendarItem from '../Types/CalendarItem';
 import { DateData } from 'react-native-calendars';
 import { DayProps } from 'react-native-calendars/src/calendar/day';
+import { useRecoilState } from 'recoil';
+
+import CalendarItem from '../Types/CalendarItem';
+import { selectedDayAtom } from '../Recoil/Atom/selectedDayAtom';
 
 const width = Dimensions.get('window').width;
 
@@ -19,12 +22,23 @@ type Props = DayProps & {
 };
 
 export const ScheduleCalendarDayItem = (props: Props) => {
-  const { date, eventItems: dayItems, children, state, cellMinHeight, onPress } = props;
+  const { date, eventItems: dayItems, children, state, cellMinHeight } = props;
+  const [selected, setSelected] = useRecoilState(selectedDayAtom);
 
   const events = useMemo(
     () => (dayItems.get((date as DateData).dateString) ?? []).sort((a, b) => b.index - a.index),
     [date, dayItems],
   );
+
+  const handleDayPress = (day: DateData | undefined) => {
+    console.log('on press day', day);
+    if (day) {
+      setSelected(day);
+    }
+    else {
+      console.log("日付がセットされませんでした");
+    }
+  };
 
   const renderEvent = useCallback((v: CalendarItem, i: number) => {
     const borderLeft = v.type == 'start' || v.type == 'all' ? CELL_RADIUS : 0; // 表示タイプが予定開始日または全日の場合は、左枠線を曲げる
@@ -67,12 +81,13 @@ export const ScheduleCalendarDayItem = (props: Props) => {
           opacity: state == 'disabled' ? 0.4 : 1,
         },
       ]}
-      onPress={() => onPress?.(date)}
+      onPress={() => handleDayPress(date)}
     >
       <Text 
-        style={[styles.dayText, 
+        style={[
+          styles.dayText, 
           state == 'today' && styles.todayText, 
-          state == 'selected' && styles.selectedText]}
+          date === selected && styles.selectedText]}
         >
           {children}
         </Text>

@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { View, useColorScheme } from 'react-native';
 import { CalendarList, LocaleConfig } from 'react-native-calendars';
-import { ScheduleCalendarDayItem } from './ScheduleCalendarDayItem';
 import { Theme as CalendarTheme } from 'react-native-calendars/src/types';
+
+import { ScheduleCalendarDayItem } from './ScheduleCalendarDayItem';
 import { useCalendarEvents } from '../Hooks/useCalendarEvents';
 
 LocaleConfig.locales.jp = {
@@ -17,7 +18,6 @@ const PAST_RANGE = 24;
 const FUTURE_RANGE = 24;
 
 export default function ScheduleCalendar() {
-  const [selected, setSelected] = useState('');
   const { eventItems } = useCalendarEvents();
   const theme = useColorScheme();
   const cellMinHeight = 58;
@@ -26,21 +26,11 @@ export default function ScheduleCalendar() {
     () => ({
       monthTextColor: '#000',
       textMonthFontWeight: 'bold',
-      calendarBackground: 'white',
+      calendarBackground: 'transparent',
       arrowColor: '#0000ff',
     }),
     [theme],
   );
-
-  const handleDayPress = (day: { dateString: string } | undefined) => {
-    console.log('on press day', day?.dateString);
-    if (day?.dateString) {
-      setSelected(day.dateString);
-    }
-    else {
-      console.log("日付がセットされませんでした");
-    }
-  };
   
   return (
     <View style={{flex: 1}}>
@@ -59,10 +49,6 @@ export default function ScheduleCalendar() {
                 {...day} 
                 eventItems={eventItems} 
                 cellMinHeight={cellMinHeight} 
-                {...(day.date?.dateString === selected ? { state: 'selected' } : {})}
-                onPress={() => {
-                  handleDayPress(day.date);
-                }}
               />
             )
           }
