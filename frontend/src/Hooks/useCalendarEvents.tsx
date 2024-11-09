@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 
 import Schedule from '../Types/Schedule';
 import CalendarItem from '../Types/CalendarItem';
-// import { dateFormat } from '@/utils';
 import dayjs from 'dayjs';
 import ja from 'dayjs/locale/ja';
 
@@ -43,15 +42,12 @@ export const useCalendarEvents = () => {
   ]);
 
   const eventItems = useMemo(() => {
-    // ポイント1: 結果はMapにセットしていく
     const result = new Map<string, CalendarItem[]>();
     events.map((event, i) => {
       const dayKey = dateFormat(event.fromAt);
       const diff = dayjs(event.toAt).diff(event.fromAt, 'day') + 1;
       if (diff == 1) {
-        // A:予定が1日以内の場合
         const currentData = result.get(dayKey);
-        // A-1:既に既存データがある場合は下に表示させるため表示順を取得
         const maxIndex = currentData?.reduce((p, c) => Math.max(p, c.index), 0);
         result.set(dayKey, [
           ...(currentData ?? []),
@@ -64,9 +60,7 @@ export const useCalendarEvents = () => {
           },
         ]);
       } else {
-        // B:予定が1日以上の場合
         let index: null | number = null;
-        // B-1:予定が複数日に跨る場合は該当分処理する
         Array(diff)
           .fill(null)
           .map((_, i) => {

@@ -2,8 +2,10 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useRecoilState } from 'recoil';
 
 import { selectedDayAtom } from '../Recoil/Atom/selectedDayAtom';
+import CalendarItem from '../Types/CalendarItem';
 
-function ScheduleCalendarDayDetail() {
+
+function ScheduleCalendarDayDetail(props: {eventItems: Map<string, CalendarItem[]>}) {
 	const [selected, setSelected] = useRecoilState(selectedDayAtom);
 
 	return (
@@ -12,7 +14,16 @@ function ScheduleCalendarDayDetail() {
 				<Text>{selected?.dateString}</Text>
 			</View>
 			<View style={styles.rightContainer}>
-				<Text>右側のビュー</Text>
+				{selected && props.eventItems.get(selected.dateString)?.map((item, index) => (
+					<View style={[
+						styles.eventItem,
+						{ backgroundColor: item.color }
+					]}>
+						<Text style={{color: 'white'}}>
+							{item.text}, {item.type}
+						</Text>
+					</View>
+				))}
 			</View>
 		</View>
 	)
@@ -33,6 +44,11 @@ const styles = StyleSheet.create({
 		flex: 3,
 		height: '100%',
 	},
+	eventItem: {
+		borderRadius: 5,
+		marginTop: 3,
+		padding: 2
+	}
 
 })
 

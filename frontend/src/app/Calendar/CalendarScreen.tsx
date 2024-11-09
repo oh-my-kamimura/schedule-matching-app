@@ -5,8 +5,11 @@ import { Ionicons } from '@expo/vector-icons';
 
 import ScheduleCalendar from '../../Components/ScheduleCalendar';
 import ScheduleCalendarDayDetail from '../../Components/ScheduleCalendarDayDetail';
+import { useCalendarEvents } from '../../Hooks/useCalendarEvents';
 
 function CalendarScreen() {
+	const { eventItems } = useCalendarEvents();
+
 	return (
 		<View style={{ flex: 1 }}>
 			<Header title="カレンダー" />
@@ -14,7 +17,7 @@ function CalendarScreen() {
 				<ScheduleCalendar/>
 			</View>
 			<View style={{ flex: 0.15 }}>
-				<ScheduleCalendarDayDetail/>
+				<ScheduleCalendarDayDetail eventItems={eventItems}/>
 			</View>
 			<TouchableOpacity style={{ position: 'absolute', bottom: 30, right: 20 }} onPress={() => router.replace('Calendar/AddScheduleScreen')}>
 				<Ionicons name="add-circle" size={80} color="#EB8434" />
