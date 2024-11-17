@@ -19,10 +19,13 @@ function ScheduleCalendarDayDetail(props: {eventItems: Map<string, CalendarItem[
 			</View>
 			<View style={styles.rightContainer}>
 				{selected && props.eventItems.get(selected.dateString)?.map((item, index) => (
-					<View style={[
-						styles.eventItem,
-						{ backgroundColor: item.color }
-					]}>
+					<View 
+						style={[
+							styles.eventItem,
+							{ backgroundColor: item.color }
+						]}
+						key={item.id}
+					>
 						<Text style={{color: 'white'}}>
 							{item.text}, {item.type}
 						</Text>
