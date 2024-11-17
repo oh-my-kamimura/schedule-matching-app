@@ -17,10 +17,10 @@ LocaleConfig.defaultLocale = 'jp';
 const PAST_RANGE = 24;
 const FUTURE_RANGE = 24;
 
-export default function ScheduleCalendar() {
+export default function ScheduleCalendar({ onMonthChange }: { onMonthChange: (month: string) => void }) {
   const { eventItems } = useCalendarEvents();
   const theme = useColorScheme();
-  const cellMinHeight = 58;
+  const cellMinHeight = 64;
 
   const calendarTheme: CalendarTheme = useMemo(
     () => ({
@@ -41,7 +41,15 @@ export default function ScheduleCalendar() {
         firstDay={1}
         showSixWeeks={false}
         hideExtraDays={false}
-        monthFormat="yyyy年 M月"
+        monthFormat=""
+        onVisibleMonthsChange={(months) => {
+          if (months.length > 0) {
+            const { year, month } = months[0];
+            const formattedMonth = `${year}年${month}月`;
+            onMonthChange(formattedMonth);
+          }
+        }}
+        headerStyle={{height:40, justifyContent:'center', paddingBottom:10}}
         dayComponent={
           (day) => {
             return(
@@ -56,7 +64,7 @@ export default function ScheduleCalendar() {
         markingType="custom"
         theme={calendarTheme}
         horizontal={true}
-        hideArrows={false}
+        hideArrows={true}
         pagingEnabled={true}
       />
     </View>
