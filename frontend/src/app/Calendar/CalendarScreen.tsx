@@ -13,7 +13,7 @@ function CalendarScreen() {
 	const [currentYearMonth, setCurrentYearMonth] = useState('');
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View style={{ flex: 1, backgroundColor: '#F8F8FA' }}>
 			<Header title={currentYearMonth} />
 			<View style={{ flex: 0.85 }}>
 				<ScheduleCalendar onMonthChange={setCurrentYearMonth}/>
