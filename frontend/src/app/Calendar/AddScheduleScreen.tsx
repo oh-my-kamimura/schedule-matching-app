@@ -1,18 +1,18 @@
 import { Platform, ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Header from '../../Elements/Header';
 import { TextInput, Button } from 'react-native-paper';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useForm, Controller } from 'react-hook-form';
+import { addSchedule } from '../../Services/scheduleService';
+import Schedule from '../../Types/Schedule';
+import { router } from 'expo-router';
+import BackButton from '../../Components/BackButton';
+import { Dropdown, SelectCountry } from 'react-native-element-dropdown';
 
-export interface Schedule {
-    title: string;
-    startDate: Date;
-    endDate: Date;
-    memo: string;
-};
 
 function AddScheduleScreen() {
+    const [calendar, setCalendar] = useState('');
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [startDatePickerVisible, setStartDatePickerVisible] = useState<boolean>(false);
@@ -30,7 +30,40 @@ function AddScheduleScreen() {
         date.setMinutes(roundedMinutes);
         return date.toLocaleTimeString('ja-JP', timeOptions);
     };
-    
+
+    const calendars = [
+        {
+          value: '1',
+          label: 'Country 1',
+          image: require('../../../assets/images/8FBC8B.png'),
+        },
+        {
+          value: '2',
+          label: 'Country 2',
+          image: require('../../../assets/images/8FBC8B.png'),
+        },
+        {
+          value: '3',
+          label: 'Country 3',
+          image: require('../../../assets/images/8FBC8B.png'),
+        },
+        {
+          value: '4',
+          label: 'Country 4',
+          image: require('../../../assets/images/8FBC8B.png'),
+        },
+        {
+          value: '5',
+          label: 'Country 5',
+          image: require('../../../assets/images/8FBC8B.png'),
+        },
+      ];
+
+    const calendarColors: { [key: string]: string } = {
+        'home': '#8FBC8B',
+        'work': '#20B2AA',
+        'outdoor': '#FFE944',
+    };
     useEffect(() => {
         setFormattedStartDate(formatTime(startDate));
     }, [startDate]);
@@ -59,11 +92,22 @@ function AddScheduleScreen() {
         
         // スケジュールの追加処理
         // ここに追加処理を記述する
+        await addSchedule(schedule);
+
+        // フォームの内容を初期化
+        setValue('title', '');
+        setValue('calendar', 'home');
+        setValue('startDate', new Date());
+        setValue('endDate', new Date());
+        setValue('memo', '');
+
+
     };
 
     return (
         <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={() => { setStartDatePickerVisible(false); setEndDatePickerVisible(false); }}>
             <Header title="予定追加ページ" />
+            <BackButton route='Calendar/CalendarScreen' />
             <TouchableOpacity style={styles.container} activeOpacity={1} onPress={() => {}}>
                 <ScrollView>
                     <Controller
@@ -89,6 +133,24 @@ function AddScheduleScreen() {
                             {errors.title && <Text style={styles.errorText}>{errors.title.message}</Text>}
                         </>
                         )}
+                    />
+                    <SelectCountry
+                        style={styles.dropdown}
+                        selectedTextStyle={styles.selectedTextStyle}
+                        placeholderStyle={styles.placeholderStyle}
+                        imageStyle={styles.imageStyle}
+                        iconStyle={styles.iconStyle}
+
+                        maxHeight={200}
+                        value={calendar}
+                        data={calendars}
+                        valueField="value"
+                        labelField="label"
+                        imageField="image"
+                        placeholder="Select country"
+                        onChange={e => {
+                        setCalendar(e.value);
+                        }}
                     />
                     <Controller
                         control={control}
@@ -237,6 +299,31 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         marginTop: 5,
     },
+    dropdown: {
+        margin: 16,
+        height: 50,
+        borderBottomColor: 'gray',
+        borderBottomWidth: 0.5,
+      },
+      imageStyle: {
+        width: 24,
+        height: 24,
+      },
+      placeholderStyle: {
+        fontSize: 16,
+      },
+      selectedTextStyle: {
+        fontSize: 16,
+        marginLeft: 8,
+      },
+      iconStyle: {
+        width: 20,
+        height: 20,
+      },
+      inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+      },
 });
 
 export default AddScheduleScreen;

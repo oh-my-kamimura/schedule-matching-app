@@ -42,7 +42,7 @@ function SignUpScreen() {
 
   return (
     <View style={styles.container}>
-      <BackButton></BackButton>
+      <BackButton route='' />
       <Text style={styles.title}>
         アカウント作成
       </Text>

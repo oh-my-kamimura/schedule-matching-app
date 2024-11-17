@@ -35,7 +35,7 @@ function LogInScreen() {
 
 	return (
 		<View style={styles.container}>
-			<BackButton></BackButton>
+			<BackButton route='' />
 			<Text style={styles.title}>
 				ログイン
 			</Text>
