@@ -11,7 +11,7 @@ const width = Dimensions.get('window').width;
 
 export const CELL_HEIGHT = 12;
 
-const MAX_EVENTS = 5;
+const MAX_EVENTS = 3;
 const CELL_ITEM_PADDING = 2;
 const CELL_RADIUS = 3;
 
@@ -41,33 +41,59 @@ export const ScheduleCalendarDayItem = (props: Props) => {
   };
 
   const renderEvent = useCallback((v: CalendarItem, i: number) => {
-    const borderLeft = v.type == 'start' || v.type == 'all' ? CELL_RADIUS : 0; // 表示タイプが予定開始日または全日の場合は、左枠線を曲げる
-    const borderRight = v.type == 'end' || v.type == 'all' ? CELL_RADIUS : 0; // 表示タイプが予定終了日または全日の場合は、右枠線を曲げる
+    const borderLeft = v.type == 'start' || v.type == 'all' ? CELL_RADIUS : 0;
+    const borderRight = v.type == 'end' || v.type == 'all' ? CELL_RADIUS : 0;
+
     return (
-      <View
-        key={`${v.id} - ${i}`}
-        style={[
-          styles.event,
-          {
-            backgroundColor: v.color,
-            top: v.index * (CELL_HEIGHT + CELL_ITEM_PADDING), // 並び順の位置で表示させる
-            borderTopLeftRadius: borderLeft,
-            borderBottomLeftRadius: borderLeft,
-            borderTopRightRadius: borderRight,
-            borderBottomRightRadius: borderRight,
-          },
-        ]}
-      >
-        {v.type == 'start' || v.type == 'all' ? (
-          <View style={styles.eventRow}>
-            <Text style={styles.eventText} numberOfLines={1}>
-              {v.text}
+      v.index < MAX_EVENTS ? (
+        <View
+          key={`${v.id} - ${i}`}
+          style={[
+            styles.event,
+            {
+              backgroundColor: v.color,
+              top: v.index * (CELL_HEIGHT + CELL_ITEM_PADDING), // 並び順の位置で表示させる
+              borderTopLeftRadius: borderLeft,
+              borderBottomLeftRadius: borderLeft,
+              borderTopRightRadius: borderRight,
+              borderBottomRightRadius: borderRight,
+            },
+          ]}
+        >
+          {v.type == 'start' || v.type == 'all' ? (
+            <View style={styles.eventRow}>
+              <Text style={styles.eventText} numberOfLines={1}>
+                {v.text}
+              </Text>
+            </View>
+          ) : (
+            <></>
+          )}
+        </View>
+      ) : (
+        v.index == MAX_EVENTS ? (
+          <View
+            key={`${v.id} - ${i}`}
+            style={[
+              styles.event,
+              {
+                top: v.index * (CELL_HEIGHT + CELL_ITEM_PADDING),
+              },
+            ]}
+          >
+            <Text
+              style={{
+                fontSize: 10,
+                color: '#444444'
+              }}
+            >
+              more...
             </Text>
           </View>
         ) : (
           <></>
-        )}
-      </View>
+        )
+      )
     );
   }, []);
 
@@ -77,20 +103,20 @@ export const ScheduleCalendarDayItem = (props: Props) => {
         styles.cell,
         {
           minHeight: cellMinHeight,
-          maxWidth: MAX_EVENTS * CELL_HEIGHT + CELL_ITEM_PADDING,
+          maxHeight: MAX_EVENTS * CELL_HEIGHT + CELL_ITEM_PADDING,
           opacity: state == 'disabled' ? 0.4 : 1,
         },
       ]}
       onPress={() => handleDayPress(date)}
     >
-      <Text 
+      <Text
         style={[
-          styles.dayText, 
-          state == 'today' && styles.todayText, 
+          styles.dayText,
+          state == 'today' && styles.todayText,
           date === selected && styles.selectedText]}
-        >
-          {children}
-        </Text>
+      >
+        {children}
+      </Text>
       <View>{events.map((event, i) => renderEvent(event, i))}</View>
     </TouchableOpacity>
   );
