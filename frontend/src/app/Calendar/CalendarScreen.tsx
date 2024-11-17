@@ -13,15 +13,15 @@ function CalendarScreen() {
 	const [currentYearMonth, setCurrentYearMonth] = useState('');
 
 	return (
-		<View style={{ flex: 1, backgroundColor: '#F8F8FA' }}>
+		<View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
 			<Header title={currentYearMonth} />
-			<View style={{ flex: 0.85 }}>
+			<View style={{ flex: 0.83 }}>
 				<ScheduleCalendar onMonthChange={setCurrentYearMonth}/>
 			</View>
-			<View style={{ flex: 0.15 }}>
+			<View style={{ flex: 0.17 }}>
 				<ScheduleCalendarDayDetail eventItems={eventItems}/>
 			</View>
-			<TouchableOpacity style={{ position: 'absolute', bottom: 106, right: 18 }} onPress={() => router.replace('Calendar/AddScheduleScreen')}>
+			<TouchableOpacity style={{ position: 'absolute', bottom: 116, right: 18 }} onPress={() => router.replace('Calendar/AddScheduleScreen')}>
 				<Ionicons name="add-circle" size={80} color="#EB8434" />
 			</TouchableOpacity>
 		</View>

@@ -20,6 +20,11 @@ function Layout() {
 						headerShown: false,
 						tabBarActiveTintColor: '#4B8687',
 						tabBarInactiveTintColor: '#9E9E9E',
+						tabBarStyle: { 
+							backgroundColor: '#F5F5F5',
+							borderTopColor: '#888888',
+							borderTopWidth: 0.3,
+						},
 					}}>
 					<Tabs.Screen
 						name="Calendar/CalendarScreen"

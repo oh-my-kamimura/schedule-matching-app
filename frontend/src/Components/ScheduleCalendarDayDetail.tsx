@@ -37,8 +37,6 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: 'row',
-		borderTopColor: 'gray',
-		borderTopWidth: 1,
 	},
 	leftContainer: {
 		flex: 1,
@@ -46,13 +44,13 @@ const styles = StyleSheet.create({
 	},
 	selectedDay: {
 		textAlign: 'center',
-		marginTop: 15,
+		marginTop: 2,
 		fontSize: 25,
 		fontWeight: 'bold'
 	},
 	selectedDayofweek: {
 		textAlign: 'center',
-		marginTop: 10,
+		marginTop: 5,
 		fontSize: 10
 	},
 	rightContainer: {
