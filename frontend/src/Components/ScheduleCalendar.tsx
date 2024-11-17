@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native'; // Import the 'Text' component from 'react-native'
-import { Calendar, LocaleConfig } from 'react-native-calendars';
+import React, { useMemo, useState } from 'react';
+import { View, useColorScheme } from 'react-native';
+import { CalendarList, LocaleConfig } from 'react-native-calendars';
+import { Theme as CalendarTheme } from 'react-native-calendars/src/types';
+
+import { ScheduleCalendarDayItem } from './ScheduleCalendarDayItem';
+import { useCalendarEvents } from '../Hooks/useCalendarEvents';
 
 LocaleConfig.locales.jp = {
     monthNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
@@ -10,29 +14,58 @@ LocaleConfig.locales.jp = {
   };
 LocaleConfig.defaultLocale = 'jp';
 
-const handleDayPress = (day: { dateString: string } | undefined) => {
-  //monthも取得したい場合は、day.dateStringをnew Date()でDateオブジェクトに変換してから取得する
-  console.log(day);
-};
+const PAST_RANGE = 24;
+const FUTURE_RANGE = 24;
 
+export default function ScheduleCalendar({ onMonthChange }: { onMonthChange: (month: string) => void }) {
+  const { eventItems } = useCalendarEvents();
+  const theme = useColorScheme();
+  const cellMinHeight = 64;
 
-export default function ScheduleCalendar() {
+  const calendarTheme: CalendarTheme = useMemo(
+    () => ({
+      monthTextColor: '#000',
+      textMonthFontWeight: 'bold',
+      calendarBackground: 'transparent',
+      arrowColor: '#0000ff',
+    }),
+    [theme],
+  );
+  
   return (
-    <View>
-      <Calendar 
-        style = {{ 
-          height: '100%',
+    <View style={{flex: 1}}>
+      <CalendarList
+        key={theme}
+        pastScrollRange={PAST_RANGE}
+        futureScrollRange={FUTURE_RANGE}
+        firstDay={1}
+        showSixWeeks={false}
+        hideExtraDays={false}
+        monthFormat=""
+        onVisibleMonthsChange={(months) => {
+          if (months.length > 0) {
+            const { year, month } = months[0];
+            const formattedMonth = `${year}年${month}月`;
+            onMonthChange(formattedMonth);
+          }
         }}
-        dayComponent={({ date, state }: { date: any; state: any }) => {
-            const currentDate = new Date();
-            return (
-              <TouchableOpacity onPress={() => handleDayPress(date)}>
-              <View style={{ height: 80, width: 50, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ color:'black' }}>{date && date.day}</Text>
-              </View>
-              </TouchableOpacity>
-            );
-        }}
+        headerStyle={{height:40, justifyContent:'center', paddingBottom:10}}
+        dayComponent={
+          (day) => {
+            return(
+              <ScheduleCalendarDayItem 
+                {...day} 
+                eventItems={eventItems} 
+                cellMinHeight={cellMinHeight} 
+              />
+            )
+          }
+        }
+        markingType="custom"
+        theme={calendarTheme}
+        horizontal={true}
+        hideArrows={true}
+        pagingEnabled={true}
       />
     </View>
   )

@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
 	header: {
 		height: 100,
 		justifyContent: 'flex-end',
-		backgroundColor: '#ffffff',
+		backgroundColor: '#F5F5F5',
 		borderBottomColor: '#888888',
 		borderBottomWidth: 0.3,
 	},
