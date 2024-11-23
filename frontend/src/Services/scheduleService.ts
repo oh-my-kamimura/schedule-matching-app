@@ -8,27 +8,6 @@ import { auth, db, storage } from "../config";
 import Schedule from '../Types/Schedule';
 import { Timestamp } from "firebase/firestore";
 
-// export const addFriendInDatabase = async (
-//     uid: string
-//   ): Promise<void | Error> => {
-//     try {
-//       if (auth.currentUser === null) return;
-//       console.log(auth.currentUser.uid);
-//       await updateDoc(doc(db, "users", auth.currentUser.uid), {
-//         friendsList: arrayUnion(uid),
-//       });
-//       console.log("-------------------------");
-//       console.log("firestoreへのデータ格納完了");
-//     } catch (error) {
-//       if (error instanceof FirebaseError) {
-//         const { code, message } = error;
-//         console.error("FirebaseError: ", error);
-//         return new FirebaseError(code, message);
-//       }
-//       return new Error();
-//     }
-//   };
-
 export const addSchedule = async (
     schedule: Schedule
 ): Promise<void | Error> => {
@@ -37,9 +16,12 @@ export const addSchedule = async (
         console.log(auth.currentUser.uid);
         await setDoc(doc(collection(db, "users", auth.currentUser.uid, "Calendars")), 
         {
+            calendar: schedule.calendar,
             title: schedule.title,
+            isAllDay: schedule.isAllDay,
             startTime: schedule.startDate,
             endTime: schedule.endDate,
+            allowConflict: schedule.allowConflict,
             memo: schedule.memo,
         });
         console.log("-------------------------");

@@ -1,11 +1,10 @@
 type Schedule = {
     id: string;
-    calendar: 'home' | 'work' | 'outdoor';
+    calendar: string;
     title: string;
     isAllDay: boolean;
     startDate: Date;
     endDate: Date;
-    color: string;
     allowConflict: boolean;
     memo: string;
 }
