@@ -1,21 +1,23 @@
-import { Platform, ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import Header from '../../Elements/Header';
 import { TextInput, Button } from 'react-native-paper';
-import React, { memo, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useForm, Controller, set } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { addSchedule } from '../../Services/scheduleService';
 import Schedule from '../../Types/Schedule';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import BackButton from '../../Components/BackButton';
 import { SelectCountry } from 'react-native-element-dropdown';
 import ToggleSwitch from 'toggle-switch-react-native'
-import { dateFormat } from '../../Hooks/useCalendarEvents';
+import { selectedDayAtom } from '../../Recoil/Atom/selectedDayAtom';
 
 
 function AddScheduleScreen() {
+    const [selected, setSelected] = useRecoilState(selectedDayAtom);
     const [calendar, setCalendar] = useState('outdoor');
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(selected ? new Date(selected.dateString) : new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [isAllDay, setIsAllDay] = useState<boolean>(false);
     const [startDatePickerVisible, setStartDatePickerVisible] = useState<boolean>(false);
@@ -54,7 +56,26 @@ function AddScheduleScreen() {
             image: require('../../../assets/images/FFE944.png'),
         },
     ];
+    useFocusEffect(
+        useCallback(() => {
+            // 状態を初期化する
+            setValue('title', '');
+            setCalendar('outdoor');
+            setStartDate(selected ? new Date(selected.dateString) : new Date());
+            setEndDate(new Date());
+            setIsAllDay(false);
+            setStartDatePickerVisible(false);
+            setEndDatePickerVisible(false);
+            setFormattedStartDate('開始日時');
+            setFormattedEndDate('終了日時');
+            setAllowConflict(false);
+            setMemo('');
+        }, [selected])
+    );
     useEffect(() => {
+        if (endDate < startDate) {
+            setEndDate(startDate);
+        }
         setFormattedStartDate(formatTime(startDate));
     }, [startDate]);
 
@@ -82,15 +103,6 @@ function AddScheduleScreen() {
             schedule.endDate.setHours(23, 59, 59, 999);
         }
 
-        // スケジュールの詳細をログに表示
-        console.log(`タイトル: ${schedule.title}`);
-        console.log(`カレンダー: ${schedule.calendar}`);
-        console.log(`終日: ${schedule.isAllDay ? 'はい' : 'いいえ'}`);
-        console.log(`開始日時: ${schedule.startDate}`);
-        console.log(`終了日時: ${schedule.endDate}`);
-        console.log(`他の予定との被りを許可: ${schedule.allowConflict ? 'はい' : 'いいえ'}`);
-        console.log(`メモ: ${schedule.memo}`);
-
         // 終了日時が開始日時より前の場合はアラートを表示
         if (schedule.startDate > schedule.endDate) {
             alert('終了日時は開始日時より後に設定してください。');
@@ -100,23 +112,6 @@ function AddScheduleScreen() {
         // スケジュールの追加処理
         await addSchedule(schedule);
 
-        // フォームの内容を初期化
-        setValue('title', '');
-        setCalendar('outdoor');
-        setIsAllDay(false);
-        setStartDate(new Date(Math.ceil(new Date().getTime() / (10 * 60 * 1000)) * (10 * 60 * 1000)));
-        setEndDate(new Date(Math.ceil(new Date().getTime() / (10 * 60 * 1000)) * (10 * 60 * 1000)));
-        setAllowConflict(false);
-        setMemo('');
-
-        console.log(`タイトル: ${schedule.title}`);
-        console.log(`カレンダー: ${schedule.calendar}`);
-        console.log(`終日: ${schedule.isAllDay ? 'はい' : 'いいえ'}`);
-        console.log(`開始日時: ${schedule.startDate}`);
-        console.log(`終了日時: ${schedule.endDate}`);
-        console.log(`他の予定との被りを許可: ${schedule.allowConflict ? 'はい' : 'いいえ'}`);
-        console.log(`メモ: ${schedule.memo}`);
-
         // カレンダー画面に遷移
         router.push('Calendar/CalendarScreen');
     };
@@ -124,8 +119,8 @@ function AddScheduleScreen() {
     return (
         <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={() => { setStartDatePickerVisible(false); setEndDatePickerVisible(false); }}>
             <Header title="予定追加ページ" />
-            <BackButton route='Calendar/CalendarScreen' />
-            <TouchableOpacity style={styles.container} activeOpacity={1} onPress={() => { }}>
+            <BackButton route='Calendar/CalendarScreen' isAlert={true} />
+            <KeyboardAvoidingView style={styles.container} behavior="padding">
                 <ScrollView>
                     <Controller
                         control={control}
@@ -166,17 +161,15 @@ function AddScheduleScreen() {
                             imageField="image"
                             onChange={e => {
                                 setCalendar(e.value);
-                                console.log(e.value);
                             }}
                         />
                     </View>
-                    <View style={{ alignItems: 'flex-end', marginHorizontal: 20, marginVertical: 15 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 20, marginVertical: 15 }}>
+                        <Text style={styles.label}>終日</Text>
                         <ToggleSwitch
                             isOn={isAllDay}
                             onColor="green"
                             offColor="red"
-                            label="終日"
-                            labelStyle={{ color: "black", fontWeight: "500", fontSize: 16, marginHorizontal: 20, right: 245 }}
                             size="medium"
                             onToggle={isOn => {
                                 setIsAllDay(isOn);
@@ -188,10 +181,10 @@ function AddScheduleScreen() {
                         mode="outlined"
                         style={styles.textInput}
                         activeOutlineColor='#4B8687'
-                        value={isAllDay ? startDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day:'numeric'}) : startDate.toLocaleDateString('ja-JP', timeOptions)}
+                        value={isAllDay ? startDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' }) : startDate.toLocaleDateString('ja-JP', timeOptions)}
                         onPress={() => {
                             setValue('startDate', startDate); // 初期値を設定
-                            setStartDatePickerVisible(true);
+                            setStartDatePickerVisible(startDatePickerVisible => !startDatePickerVisible);
                             setEndDatePickerVisible(false);
                         }}
                         keyboardType='default'
@@ -219,11 +212,11 @@ function AddScheduleScreen() {
                         mode="outlined"
                         style={styles.textInput}
                         activeOutlineColor='#4B8687'
-                        value={isAllDay ? endDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day:'numeric'}) : endDate.toLocaleDateString('ja-JP', timeOptions)}
+                        value={isAllDay ? endDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' }) : endDate.toLocaleDateString('ja-JP', timeOptions)}
                         onPress={() => {
                             setValue('endDate', endDate); // 初期値を設定
                             setStartDatePickerVisible(false);
-                            setEndDatePickerVisible(true);
+                            setEndDatePickerVisible(endDatePickerVisible => !endDatePickerVisible);
                         }}
                         keyboardType='default'
                         autoCapitalize='none'
@@ -244,13 +237,12 @@ function AddScheduleScreen() {
                             style={styles.dateInput}
                         />
                     }
-                    <View style={{ alignItems: 'flex-end', marginHorizontal: 20, marginTop: 30, marginBottom: 20 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 20, marginVertical: 15, marginTop: 30 }}>
+                        <Text style={styles.label}>他の予定との被りを許可</Text>
                         <ToggleSwitch
                             isOn={allowConflict}
                             onColor="green"
                             offColor="red"
-                            label="他の予定との被りを許可"
-                            labelStyle={{ color: "black", fontWeight: "500", fontSize: 16, marginHorizontal: 20, right: 140 }}
                             size="medium"
                             onToggle={isOn => {
                                 setAllowConflict(isOn);
@@ -278,7 +270,7 @@ function AddScheduleScreen() {
                         追加する
                     </Button>
                 </ScrollView>
-            </TouchableOpacity>
+            </KeyboardAvoidingView>
         </TouchableOpacity>
     )
 }
@@ -336,6 +328,8 @@ const styles = StyleSheet.create({
     label: {
         marginHorizontal: 15,
         fontSize: 16,
+        color: "black",
+        fontWeight: "500",
     },
 });
 
