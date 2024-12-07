@@ -16,7 +16,7 @@ function CalendarScreen() {
 		<View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
 			<Header title={currentYearMonth} />
 			<View style={{ flex: 0.83 }}>
-				<ScheduleCalendar onMonthChange={setCurrentYearMonth}/>
+				<ScheduleCalendar onMonthChange={setCurrentYearMonth} eventItems={eventItems}/>
 			</View>
 			<View style={{ flex: 0.17 }}>
 				<ScheduleCalendarDayDetail eventItems={eventItems}/>

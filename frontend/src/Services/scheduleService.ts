@@ -56,7 +56,7 @@ try {
         allowConflict: doc.data().allowConflict || false
     }));
     console.log("--------------------------");
-    console.log("eventsが取得しました。", events);
+    console.log("eventsが取得されました。", events);
     return events;
   } catch (error) {
     if (error instanceof FirebaseError) {

@@ -4,7 +4,7 @@ import { CalendarList, LocaleConfig } from 'react-native-calendars';
 import { Theme as CalendarTheme } from 'react-native-calendars/src/types';
 
 import { ScheduleCalendarDayItem } from './ScheduleCalendarDayItem';
-import { useCalendarEvents } from '../Hooks/useCalendarEvents';
+import CalendarItem from '../Types/CalendarItem';
 
 LocaleConfig.locales.jp = {
     monthNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
@@ -17,8 +17,7 @@ LocaleConfig.defaultLocale = 'jp';
 const PAST_RANGE = 24;
 const FUTURE_RANGE = 24;
 
-export default function ScheduleCalendar({ onMonthChange }: { onMonthChange: (month: string) => void }) {
-  const { eventItems } = useCalendarEvents();
+export default function ScheduleCalendar({ onMonthChange, eventItems }: { onMonthChange: (month: string) => void, eventItems: Map<string, CalendarItem[]> }) {
   const theme = useColorScheme();
   const cellMinHeight = 64;
 
