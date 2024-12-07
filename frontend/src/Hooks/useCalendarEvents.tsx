@@ -12,14 +12,14 @@ import { calendarEventsAtom } from '../Recoil/Atom/calendarEventAtom';
 export const dateFormat = (date: Date) => dayjs(date).locale(ja).format('YYYY-MM-DD');
 
 export const useCalendarEvents = () => {
-  const [events, setEvents] = useRecoilState(calendarEventsAtom);
+  const [calendarEvents, setCalendarEvents] = useRecoilState(calendarEventsAtom);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const fetchEvents = async () => {
     try {
       const data = await fetchEventsInDatabase();
       if (Array.isArray(data)) {
-        setEvents(data);
+        setCalendarEvents(data);
         setIsLoaded(true);
       }
     } catch (error) {
@@ -32,9 +32,9 @@ export const useCalendarEvents = () => {
   }, []);
 
   const eventItems = useMemo(() => {
-    if (events.length === 0) return new Map<string, CalendarItem[]>();
+    if (calendarEvents.length === 0) return new Map<string, CalendarItem[]>();
     const result = new Map<string, CalendarItem[]>();
-    events.map((event, i) => {
+    calendarEvents.map((event, i) => {
       const dayKey = dateFormat(event.startDate);
       const diff = dayjs(event.endDate).diff(event.startDate, 'day') + 1;
       if (diff == 1) {
@@ -72,7 +72,11 @@ export const useCalendarEvents = () => {
       }
     });
     return result;
-  }, [events]);
+  }, [calendarEvents]);
 
-  return { eventItems };
+  return { 
+    eventItems,
+    calendarEvents,
+    setCalendarEvents,
+  };
 };
