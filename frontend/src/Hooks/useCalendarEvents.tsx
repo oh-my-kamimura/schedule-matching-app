@@ -1,15 +1,18 @@
 import { useMemo, useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import ja from 'dayjs/locale/ja';
+import { useRecoilState } from 'recoil';
 
 import Schedule from '../Types/Schedule';
 import CalendarItem from '../Types/CalendarItem';
 import { fetchEventsInDatabase } from '../Services/scheduleService';
+import calendarMap from '../Types/CalendarMap';
+import { calendarEventsAtom } from '../Recoil/Atom/calendarEventAtom';
 
 export const dateFormat = (date: Date) => dayjs(date).locale(ja).format('YYYY-MM-DD');
 
 export const useCalendarEvents = () => {
-  const [events, setEvents] = useState<Schedule[]>([]);
+  const [events, setEvents] = useRecoilState(calendarEventsAtom);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const fetchEvents = async () => {
@@ -42,7 +45,7 @@ export const useCalendarEvents = () => {
           {
             id: event.id,
             index: maxIndex != undefined ? maxIndex + 1 : 0,
-            color: '#A3D10C', // 仮で設定中（event.colorに修正）
+            color: event.calendar ? calendarMap[event.calendar][1] : 'gray',
             text: event.title,
             type: 'all',
           },
@@ -60,7 +63,7 @@ export const useCalendarEvents = () => {
               {
                 id: event.id,
                 index,
-                color: '#BC95E3', // 仮で設定中（event.colorに修正）
+                color: event.calendar ? calendarMap[event.calendar][1] : 'gray',
                 text: event.title,
                 type: i == 0 ? 'start' : i == diff - 1 ? 'end' : 'between',
               },
